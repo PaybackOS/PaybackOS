@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "multiboot.h": "c"
+        "multiboot.h": "c",
+        "stdarg.h": "c"
     }
 }

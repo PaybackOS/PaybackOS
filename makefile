@@ -52,6 +52,6 @@ run:
 
 # Clean rule to remove generated files
 clean:
-	rm -rf $(OBJ) $(TARGET) iso
+	rm -rf $(OBJ) $(TARGET) iso *.iso
 
 .PHONY: ALL build clean

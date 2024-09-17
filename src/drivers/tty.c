@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <cpu/port.h>
 
 /* Hardware text mode color constants. */
 enum vga_color {
@@ -59,11 +60,20 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y) {
 	const size_t index = y * VGA_WIDTH + x;
 	terminal_buffer[index] = vga_entry(c, color);
 }
+void update_cursor(int x, int y) {
+	uint16_t pos = y * VGA_WIDTH + x;
+
+	outb(0x3D4, 0x0F);
+	outb(0x3D5, (uint8_t) (pos & 0xFF));
+	outb(0x3D4, 0x0E);
+	outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
+}
 
 void putchar(char c) {
 	if (c == '\n') {
 		terminal_row++;
 		terminal_column = 0;
+		update_cursor(terminal_column, terminal_row);
 		return;
 	}
 	terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
@@ -72,6 +82,7 @@ void putchar(char c) {
 		if (++terminal_row == VGA_HEIGHT)
 			terminal_row = 0;
 	}
+	update_cursor(terminal_column, terminal_row);
 }
 
 void print(const char* data) {
