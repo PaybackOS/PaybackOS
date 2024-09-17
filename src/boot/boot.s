@@ -46,19 +46,6 @@ doesn't make sense to return from this function as the bootloader is gone.
 .type _start, @function
 _start:
 	/*
-	The bootloader has loaded us into 32-bit protected mode on a x86
-	machine. Interrupts are disabled. Paging is disabled. The processor
-	state is as defined in the multiboot standard. The kernel has full
-	control of the CPU. The kernel can only make use of hardware features
-	and any code it provides as part of itself. There's no printf
-	function, unless the kernel provides its own <stdio.h> header and a
-	printf implementation. There are no security restrictions, no
-	safeguards, no debugging mechanisms, only what the kernel provides
-	itself. It has absolute and complete power over the
-	machine.
-	*/
-
-	/*
 	To set up a stack, we set the esp register to point to the top of the
 	stack (as it grows downwards on x86 systems). This is necessarily done
 	in assembly as languages such as C cannot function without a stack.
@@ -93,7 +80,7 @@ _start:
 	1) Disable interrupts with cli (clear interrupt enable in eflags).
 	   They are already disabled by the bootloader, so this is not needed.
 	   Mind that you might later enable interrupts and return from
-	   kernel_main (which is sort of nonsensical to do).
+	   _init (which is sort of nonsensical to do).
 	2) Wait for the next interrupt to arrive with hlt (halt instruction).
 	   Since they are disabled, this will lock up the computer.
 	3) Jump to the hlt instruction if it ever wakes up due to a

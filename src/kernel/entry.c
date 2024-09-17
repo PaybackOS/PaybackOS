@@ -3,6 +3,7 @@
 #include <string.h>
 #include <boot/multiboot.h>
 #include <boot/kernel.h>
+#include <debug.h>
 
 void _init(multiboot_info_t *info) {
     // Initialize bare bones for kernel to run
@@ -16,11 +17,13 @@ void _init(multiboot_info_t *info) {
 
         // Check for "debug" in the cmdline using strstr
         if (strstr(cmdline, "debug")) {
-            main(1);
+            setdebug(1);
+            main();
         } else {
-            main(0);
+            setdebug(0);
+            main();
         }
     } else {
-        main(0);
+        main();
     }
 }

@@ -2,6 +2,6 @@
 #define KERNEL_H 1
 #pragma once
 
-void main(int debug);
+void main();
 
 #endif
