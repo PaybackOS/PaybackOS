@@ -17,7 +17,7 @@ OBJ_C = $(SRCS_C:src/%.c=src/%.o)
 OBJ = $(OBJ_S) $(OBJ_ASM) $(OBJ_C)
 
 # Define the kernel binary
-TARGET = SpiteOS.bin
+TARGET = PaybackOS.bin
 
 # Define the build target
 ALL: build iso
@@ -43,12 +43,12 @@ iso:
 	mkdir -p iso/boot/grub/
 	cp grub.cfg iso/boot/grub/
 	mv $(TARGET) iso/boot/
-	grub-mkrescue iso/ -o SpiteOS.iso
+	grub-mkrescue iso/ -o PaybackOS.iso
 	rm -rf iso
 
 # Run the OS
 run:
-	qemu-system-x86_64 -cdrom SpiteOS.iso 
+	qemu-system-x86_64 -cdrom PaybackOS.iso 
 
 # Clean rule to remove generated files
 clean:

@@ -4,7 +4,7 @@
 #include <debug.h>
 
 void main() {
-    printf("Thank you for using SpiteOS\n");
+    printf("Thank you for using PaybackOS\n");
     if(debug()) {
         printf("Number Test: %d\n", 1);
     }
