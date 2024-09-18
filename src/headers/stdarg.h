@@ -13,4 +13,4 @@ typedef char *va_list;
 /* Define the macro to clean up after using a variable argument list */
 #define va_end(ap) ((void)0)
 
-#endif /* STDARG_H */
+#endif

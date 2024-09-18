@@ -2,6 +2,8 @@
 #include <cpu/port.h>
 #include <stdio.h>
 
+volatile uint32_t ms_ticks = 0; // Millisecond counter
+
 // The halt CPU function
 void halt_cpu(void) {
     printf("Halting CPU.\n");
@@ -20,6 +22,6 @@ void reboot() {
 }
 
 void interrupt_setup() {
-    idt_set_entry(0, halt_cpu, 0x08, 0x8E);
-    idt_set_entry(1, reboot, 0x08, 0x8E);
+    idt_set_entry(0, halt_cpu, 0x08, 0x8E); // Interrupt for halt
+    idt_set_entry(1, reboot, 0x08, 0x8E);   // Interrupt for reboot
 }
