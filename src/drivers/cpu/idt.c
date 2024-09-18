@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include "idtsetup.h"
 
 // IDT Entry structure
 typedef struct {
@@ -39,22 +40,14 @@ void load_idt(idt_pointer_t* idt_ptr) {
     );
 }
 
-// Define the divide by zero exception handler
-void halt_cpu(void) {
-    printf("Halting CPU.\n");
-    while (1) {
-        asm("cli");
-        asm("hlt");
-    }
-}
 
 // Function to initialize the IDT
 void init_idt() {
     idt_ptr.limit = (sizeof(idt_entry_t) * 256) - 1;
     idt_ptr.base = (uint32_t) &idt;
 
-    // Set up the Divide by Zero exception handler
-    idt_set_entry(0, halt_cpu, 0x08, 0x8E);
+    // Set up interrupts
+    interrupt_setup();
 
     // Load the IDT
     load_idt(&idt_ptr);
