@@ -2,6 +2,7 @@
     "files.associations": {
         "multiboot.h": "c",
         "stdarg.h": "c",
-        "debug.h": "c"
+        "debug.h": "c",
+        "stdio.h": "c"
     }
 }
