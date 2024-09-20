@@ -11,6 +11,8 @@ void halt_cpu(void) {
         asm("cli");
         asm("hlt");
     }
+    // if it breaks from our infinite loop it will reboot
+    asm("int $1");
 }
 
 void reboot() {
