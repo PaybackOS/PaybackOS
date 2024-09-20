@@ -14,10 +14,6 @@ void _init(multiboot_info_t *info) {
     terminal_initialize();
     // Initialize the serial port (not needed in qemu)
     init_serial();
-    // Initialize the GDT (needed for IDT)
-    init_gdt();
-    // Initialize the IDT (needed for interrupts)
-    init_idt();
     // Print our hello to our init
     print("Hello _init\n");
 
