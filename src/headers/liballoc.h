@@ -1,3 +1,8 @@
+/*
+This code was taken from liballoc which is under public domain
+https://github.com/blanham/liballoc/tree/master
+*/
+
 #ifndef _LIBALLOC_H
 #define _LIBALLOC_H
 
