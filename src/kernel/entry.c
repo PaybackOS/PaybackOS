@@ -4,8 +4,6 @@
 #include <boot/multiboot.h>
 #include <boot/kernel.h>
 #include <debug.h>
-#include <cpu/gdt.h>
-#include <cpu/idt.h>
 #include <stdio.h>
 
 // A simple setup to init the OS before it actually starts the real kernel

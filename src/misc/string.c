@@ -1,4 +1,29 @@
 #include <stddef.h>  // For size_t and NULL
+#include <stdint.h>
+
+void* memcpy(void* dest, const void* src, size_t n) {
+    uint8_t* d = dest;
+    const uint8_t* s = src;
+
+    for (size_t i = 0; i < n; ++i) {
+        d[i] = s[i];
+    }
+
+    return dest;
+}
+
+int memcmp(const void* lhs, const void* rhs, size_t n) {
+    const uint8_t* l = lhs;
+    const uint8_t* r = rhs;
+
+    for (size_t i = 0; i < n; ++i) {
+        if (l[i] != r[i]) {
+            return (int)(l[i] - r[i]);
+        }
+    }
+
+    return 0;
+}
 
 char *strstr(const char *haystack, const char *needle) {
     if (*needle == '\0') {
