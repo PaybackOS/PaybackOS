@@ -1,3 +1,6 @@
+/*
+This code WAS NOT! taken from liballoc it was written for liballoc to use freely
+*/
 #include <liballoc.h>
 
 // Global variables for memory allocation
