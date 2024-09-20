@@ -1,6 +1,7 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <tty.h>
+
 void hex_print(unsigned int num) {
     const char hex_chars[] = "0123456789ABCDEF";
     char buffer[9];  // Enough to hold "0x" + 8 hex digits + null terminator
