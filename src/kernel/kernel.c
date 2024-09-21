@@ -9,7 +9,7 @@ void main() {
     if(debug()) {
         // Test liballoc
         void* testalloc = malloc(5);
-        memcpy(testalloc, "hi!\n", 5);
+        strcpy(testalloc, "hi!\n");
         printf("liballoc test: %s", testalloc);
         free(testalloc);
     }

@@ -3,5 +3,6 @@
 #pragma once
 
 void printf(const char *format, ...) ;
+char getchar();
 
 #endif
