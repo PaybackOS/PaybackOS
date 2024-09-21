@@ -1,22 +1,22 @@
 #include <stddef.h>  // For size_t and NULL
 #include <stdint.h>
 
-void* memcpy(void* dest, const void* src, size_t n) {
+void* memcpy(void* dest, const void* src, size_t size) {
     uint8_t* d = dest;
     const uint8_t* s = src;
 
-    for (size_t i = 0; i < n; ++i) {
+    for (size_t i = 0; i < size; ++i) {
         d[i] = s[i];
     }
 
     return dest;
 }
 
-int memcmp(const void* lhs, const void* rhs, size_t n) {
-    const uint8_t* l = lhs;
-    const uint8_t* r = rhs;
+int memcmp(const void* dest, const void* src, size_t size) {
+    const uint8_t* l = dest;
+    const uint8_t* r = src;
 
-    for (size_t i = 0; i < n; ++i) {
+    for (size_t i = 0; i < size; ++i) {
         if (l[i] != r[i]) {
             return (int)(l[i] - r[i]);
         }
@@ -49,4 +49,16 @@ char *strstr(const char *haystack, const char *needle) {
     }
 
     return NULL;  // No match found
+}
+size_t strlen(const char* str) {
+	size_t len = 0;
+	while (str[len])
+		len++;
+	return len;
+}
+void strcpy(char* dest, const char* src) {
+    while (*src) {
+        *dest++ = *src++;
+    }
+    *dest = '\0';
 }

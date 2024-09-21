@@ -26,7 +26,7 @@ iso:
 
 # Run the OS
 run:
-	qemu-system-x86_64 -cdrom PaybackOS.iso 
+	qemu-system-x86_64 -cdrom PaybackOS.iso
 
 # Clean rule to remove generated files
 clean:
