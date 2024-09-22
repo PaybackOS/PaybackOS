@@ -27,7 +27,7 @@ void load_gdt(gdt_pointer_t* gdt_ptr) {
 }
 
 // GDT Entries
-gdt_entry_t gdt[3];
+gdt_entry_t gdt[5];
 gdt_pointer_t gdt_ptr;
 
 // Function to set a GDT entry
@@ -43,17 +43,23 @@ void gdt_set_entry(int num, uint32_t base, uint32_t limit, uint8_t access, uint8
 
 // Function to initialize the GDT
 void init_gdt() {
-    gdt_ptr.limit = (sizeof(gdt_entry_t) * 3) - 1;
+    gdt_ptr.limit = (sizeof(gdt_entry_t) * 5) - 1;
     gdt_ptr.base = (uint32_t) &gdt;
 
     // Null descriptor
     gdt_set_entry(0, 0, 0, 0, 0);
 
-    // Code segment descriptor
-    gdt_set_entry(1, 0, 0xFFFFF, 0x9A, 0xCF);
+    // Kernel Mode Code Segment
+    gdt_set_entry(1, 0, 0xFFFFF, 0x9A, 0xC0);
 
-    // Data segment descriptor
-    gdt_set_entry(2, 0, 0xFFFFF, 0x92, 0xCF);
+    // Kernel Mode Data Segment
+    gdt_set_entry(2, 0, 0xFFFFF, 0x92, 0xC0);
+
+    // User Mode Code Segment
+    gdt_set_entry(3, 0, 0xFFFFF, 0xFA, 0xC0);
+
+    // User Mode Data Segment
+    gdt_set_entry(4, 0, 0xFFFFF, 0xF2, 0xC0);
 
     // Load the GDT
     load_gdt(&gdt_ptr);

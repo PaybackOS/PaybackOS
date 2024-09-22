@@ -3,6 +3,7 @@
         "multiboot.h": "c",
         "stdarg.h": "c",
         "debug.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "string.h": "c"
     }
 }
