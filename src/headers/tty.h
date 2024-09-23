@@ -1,9 +1,7 @@
-#ifndef TTY_H
-#define TTY_H 1
+#ifndef STDIO_H
+#define STDIO_H 1
 #pragma once
 
-#include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
 
 /* Hardware text mode color constants. */

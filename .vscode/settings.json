@@ -4,6 +4,9 @@
         "stdarg.h": "c",
         "debug.h": "c",
         "stdio.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "stdint.h": "c",
+        "stdbool.h": "c",
+        "tty.h": "c"
     }
 }
