@@ -1,5 +1,6 @@
-#include <port.h>
 #include <string.h>
+#include <stddef.h>
+#include <port.h>
 #include <stdint.h>
 
 /* Hardware text mode color constants. */
@@ -29,7 +30,6 @@ static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg) {
 static inline uint16_t vga_entry(unsigned char uc, uint8_t color) {
     return (uint16_t)uc | (uint16_t)color << 8;
 }
-
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
 
@@ -116,5 +116,8 @@ void terminal_write(const char* data, size_t size) {
 }
 
 void print(const char* data) {
-    terminal_write(data, strlen(data));
+    while (*data != '\0') {
+        putchar(*data);
+        data++;
+    }
 }

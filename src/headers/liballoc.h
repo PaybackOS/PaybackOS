@@ -9,7 +9,7 @@
 
 #ifndef _HAVE_SIZE_T
 #define _HAVE_SIZE_T
-typedef	unsigned int	size_t;
+typedef long unsigned int size_t;
 #endif
 
 
@@ -42,6 +42,9 @@ struct	boundary_tag
 	struct boundary_tag *next;	//< Linked list info.
 	struct boundary_tag *prev;	//< Linked list info.
 };
+
+
+ 
 
 /** This function is supposed to lock the memory data structures. It
  * could be as simple as disabling interrupts or acquiring a spinlock.
@@ -79,8 +82,17 @@ extern void* liballoc_alloc(int);
  */
 extern int liballoc_free(void*,int);
 
+       
+
+void *malloc(size_t);				//< The standard function.
+void *realloc(void *, size_t);		//< The standard function.
+void *calloc(size_t, size_t);		//< The standard function.
+void free(void *);					//< The standard function.
+
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif
+

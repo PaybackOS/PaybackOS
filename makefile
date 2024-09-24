@@ -12,9 +12,9 @@ src/%.o: src/%.s
 src/%.o: src/%.asm
 	$(AS) -o $@ $<
 
-# Pattern rule to build .o files from .c files
-src/%.o: src/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+# Pattern rule to build .o files from .cpp files
+src/%.o: src/%.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Create the GRUB iso
 iso:
