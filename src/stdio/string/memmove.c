@@ -14,4 +14,5 @@ void* memmove(void* dest, const void* src, size_t size) {
         // No overlap or copying within same memory region
         memcpy(d, s, size);
     }
+    return 0;
 }

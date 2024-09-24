@@ -1,69 +1,96 @@
 /*
-This code WAS NOT! taken from liballoc it was written for liballoc to use freely
+This code is not from liballoc; it is for liballoc to use
 */
-#include <liballoc.h>
+#include <stddef.h>
+#include <stdint.h>
 
-// Global variables for memory allocation
-static void* heap_start = NULL;
-static void* heap_end = NULL;
-static size_t heap_size = 0;
-// Simple lock mechanism
-static volatile int lock = 0;
+#define PAGE_SIZE 4096  // Define the size of a memory page
+#define HEAP_SIZE (PAGE_SIZE * 10)  // Total heap size (10 pages)
+#define ALIGNMENT 8  // Align to 8 bytes
 
-// Implementation of liballoc_lock
+typedef struct Block {
+    size_t size;  // Size of the block
+    struct Block* next;  // Pointer to the next free block
+} Block;
+
+// Memory pool
+static uint8_t heap[HEAP_SIZE];  
+// Head of the free list, initialized statically
+static Block* free_list = (Block*)heap; 
+
+// Automatically set up the free list at the start
+static void setup_free_list() {
+    free_list->size = HEAP_SIZE - sizeof(Block);
+    free_list->next = NULL;
+}
+
+static int spinlock = 0;
+
 int liballoc_lock() {
-    if (lock == 0) {
-        lock = 1;
-        return 0;
-    }
-    return 1;
+    if (spinlock == 1) {
+        return 1;  // Lock already acquired
+    } 
+    spinlock = 1;  // Acquire lock
+    return 0;  // Lock acquired successfully
 }
 
-// Implementation of liballoc_unlock
 int liballoc_unlock() {
-    if (lock == 1) {
-        lock = 0;
-        return 0;
+    if (spinlock == 1) {
+        spinlock = 0;  // Release lock
+        return 0;  // Lock released successfully
     }
-    return 1;
+    return 1;  // Lock was not held
 }
 
-// Implementation of liballoc_alloc
-void* liballoc_alloc(int pages) {
-    if (lock != 0 || heap_end - heap_start < pages * sizeof(struct boundary_tag)) {
-        return NULL;
+// First call to liballoc_alloc will trigger the setup
+void* liballoc_alloc(int size) {
+    // Ensure the free list is set up only once
+    static int initialized = 0;
+    if (!initialized) {
+        setup_free_list();
+        initialized = 1;
     }
+
+    // Align the size
+    size = (size + ALIGNMENT - 1) & ~(ALIGNMENT - 1);
     
-    void* result = heap_start;
-    heap_start += sizeof(struct boundary_tag) * pages;
-    heap_size -= sizeof(struct boundary_tag) * pages;
-    
-    struct boundary_tag* tag = result;
-    tag->magic = 0x12345678; // Magic number
-    tag->size = sizeof(struct boundary_tag);
-    tag->real_size = sizeof(struct boundary_tag);
-    tag->index = 0;
-    tag->split_left = NULL;
-    tag->split_right = NULL;
-    tag->next = NULL;
-    tag->prev = NULL;
-    
-    return result;
+    Block* current = free_list;
+    Block* previous = NULL;
+
+    // Traverse the free list to find a suitable block
+    while (current) {
+        if (current->size >= (size_t)size) {  // Cast size to size_t for comparison
+            // Found a suitable block
+            if (current->size >= size + sizeof(Block) + ALIGNMENT) {
+                // Split the block if it's larger than needed
+                Block* next_block = (Block*)((uint8_t*)current + sizeof(Block) + size);
+                next_block->size = current->size - size - sizeof(Block);
+                next_block->next = current->next;
+                
+                current->size = size;
+                current->next = next_block;
+            } else {
+                // Use the whole block
+                if (previous) {
+                    previous->next = current->next;  // Remove from free list
+                } else {
+                    free_list = current->next;  // Move head of free list
+                }
+            }
+            return (uint8_t*)current + sizeof(Block);  // Return pointer to the allocated memory
+        }
+        previous = current;
+        current = current->next;
+    }
+    return NULL;  // No suitable block found
 }
 
-// Implementation of liballoc_free
-int liballoc_free(void* ptr, int pages) {
-    if (lock != 0) {
-        return 1;
-    }
+void liballoc_free(void* ptr) {
+    if (!ptr) return;  // NULL pointer check
     
-    struct boundary_tag* tag = ptr;
-    if (tag->magic != 0x12345678) {
-        return 1;
-    }
+    Block* block_to_free = (Block*)((uint8_t*)ptr - sizeof(Block));
     
-    heap_start -= sizeof(struct boundary_tag) * pages;
-    heap_size += sizeof(struct boundary_tag) * pages;
-    
-    return 0;
+    // Add block back to the free list
+    block_to_free->next = free_list;
+    free_list = block_to_free;
 }

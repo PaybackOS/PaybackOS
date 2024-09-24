@@ -43,9 +43,6 @@ struct	boundary_tag
 	struct boundary_tag *prev;	//< Linked list info.
 };
 
-
- 
-
 /** This function is supposed to lock the memory data structures. It
  * could be as simple as disabling interrupts or acquiring a spinlock.
  * It's up to you to decide. 

@@ -511,7 +511,7 @@ void* calloc(size_t nobj, size_t size)
 void* realloc(void *p, size_t size) {
 	void *ptr;
 	struct boundary_tag *tag;
-	int real_size;
+	size_t real_size;
 	
 	if ( size == 0 ) {
 		free( p );
