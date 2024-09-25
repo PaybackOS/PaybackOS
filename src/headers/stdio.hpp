@@ -3,5 +3,6 @@
 #pragma once
 
 void printf(const char *fmt, ...);
+void klog(int level, const char* info);
 
 #endif

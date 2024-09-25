@@ -6,6 +6,6 @@ void memcpy(void *dest, void *src, size_t n) {
 	char *cdest = (char *)dest; 
 
 	// Copy contents of src[] to dest[] 
-	for (int i=0; i<n; i++) 
+	for (size_t i=0; i<n; i++) 
 	    cdest[i] = csrc[i]; 
 } 
