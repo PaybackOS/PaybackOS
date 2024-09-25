@@ -1,4 +1,14 @@
 {
+  "files.associations": {
+    "multiboot.h": "c",
+    "stdarg.h": "c",
+    "debug.h": "c",
+    "stdio.h": "c",
+    "string.h": "c",
+    "stdint.h": "c",
+    "stdbool.h": "c",
+    "tty.h": "c"
+  },
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",
   "C_Cpp_Runner.debuggerPath": "gdb",
