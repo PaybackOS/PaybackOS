@@ -36,9 +36,6 @@ _start:
 	// Move our stack to esp (where the stack is used)
 	mov $stack_top, %esp
 
-	// Setup our GDT
-	call init_gdt
-
 	// Call our kernel
 	call _init
 
