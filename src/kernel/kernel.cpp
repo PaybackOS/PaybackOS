@@ -4,6 +4,8 @@
 
 void init_gdt();
 void idt_init(void);
+void PIC_init();
+extern "C" void switch_to_user_mode();
 
 extern "C" void _init() {
     // Init the VGA interface
@@ -15,5 +17,9 @@ extern "C" void _init() {
     // Init the IDT
     idt_init();
     klog(1, "IDT loaded");
-    asm("int $0");
+    // Init the PIC
+    PIC_init();
+    klog(1, "PIC started");
+    // Move to our userspace
+    switch_to_user_mode();
 }
