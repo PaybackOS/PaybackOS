@@ -1,23 +1,36 @@
 include make.config
 
+# Define variables
+SRC_DIR = src
+OBJ_DIR = obj
+TARGET = PaybackOS.bin
+
+# Automatically find all source files
+SRCS := $(shell find $(SRC_DIR) -name '*.cpp' -o -name '*.s' -o -name '*.asm')
+OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(patsubst $(SRC_DIR)/%.s,$(OBJ_DIR)/%.o,$(patsubst $(SRC_DIR)/%.asm,$(OBJ_DIR)/%.o,$(SRCS))))
+
+# Ensure the object directory exists
+$(shell mkdir -p $(OBJ_DIR))
+
 # Define the build rules
-build: $(OBJ)
-	$(LD) -T linker.ld -o $(TARGET) $(LDFLAGS) $(OBJ)
+build: $(OBJS)
+	$(LD) -T linker.ld -o $(TARGET) $(LDFLAGS) $(OBJS)
 
-# Pattern rule to build .o files from .s files
-src/%.o: src/%.s
+# Pattern rules to build .o files from .s, .asm, and .cpp files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.s
+	mkdir -p $(dir $@)  # Create the target directory
 	$(AS) -o $@ $<
 
-# Pattern rule to build .o files from .asm files
-src/%.o: src/%.asm
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.asm
+	mkdir -p $(dir $@)  # Create the target directory
 	$(AS) -o $@ $<
 
-# Pattern rule to build .o files from .cpp files
-src/%.o: src/%.cpp
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(dir $@)  # Create the target directory
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Create the GRUB iso
-iso:
+iso: build
 	mkdir -p iso/boot/grub/
 	cp grub.cfg iso/boot/grub/
 	mv $(TARGET) iso/boot/
@@ -30,6 +43,6 @@ run:
 
 # Clean rule to remove generated files
 clean:
-	rm -rf $(OBJ) $(TARGET) iso *.iso
+	rm -rf obj $(TARGET) iso *.iso
 
-.PHONY: ALL build clean
+.PHONY: all build clean iso run
