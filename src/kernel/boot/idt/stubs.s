@@ -1,15 +1,15 @@
 .extern exception_handler
 
-// Define ISR stubs that call exception_handler
+// Define ISR stubs for exceptions
 .macro isr_err_stub num
 isr_stub_\num:
-    call exception_handler  // Call the common exception handler
+    call exception_handler  // Call the common exception handler for errors
     iret                    // Return from interrupt
 .endm
 
 .macro isr_no_err_stub num
 isr_stub_\num:
-    call exception_handler  // Call the common exception handler
+    call exception_handler  // Call the common exception handler for non-error interrupts
     iret                    // Return from interrupt
 .endm
 
@@ -49,6 +49,6 @@ isr_no_err_stub 31   // Reserved
 
 .global isr_stub_table
 isr_stub_table:
-    .rept 32              // Repeat the following 32 times
+    .rept 32
         .long isr_stub_0   // Start with ISR stub 0
     .endr

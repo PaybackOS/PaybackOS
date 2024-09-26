@@ -20,6 +20,6 @@ extern "C" void _init() {
     // Init the PIC
     PIC_init();
     klog(1, "PIC started");
-    // Move to our userspace
+    //Move to our userspace
     switch_to_user_mode();
 }
