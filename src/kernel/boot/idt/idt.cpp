@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+void init_isr_handlers();
+
 typedef struct {
     uint16_t isr_low;      // Lower 16 bits of ISR address
     uint16_t kernel_cs;    // Code segment selector in GDT
@@ -33,6 +35,7 @@ void idt_set_descriptor(uint8_t vector, uintptr_t isr, uint8_t flags) {
 extern void* isr_stub_table[];  // External ISR stubs
 
 void idt_init(void) {
+<<<<<<< HEAD
     idtr.base = (uint32_t)&idt;  
     idtr.limit = (sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS) - 1;  
 
@@ -41,6 +44,20 @@ void idt_init(void) {
         idt_set_descriptor(vector, (uintptr_t)isr_stub_table[vector], 0x8E);
     }
 
+=======
+    idtr.base = (uint32_t)&idt;
+    idtr.limit = (sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS) - 1;
+
+    // Set the first 32 vectors (exceptions)
+    for (uint8_t vector = 0; vector < 48; vector++) {
+        idt_set_descriptor(vector, (uintptr_t)isr_stub_table[vector], 0x8E);
+    }
+
+    //Set divbyzero DPL=3 to allow "int 0" software interrupt
+    idt_set_descriptor(0, (uintptr_t)isr_stub_table[0], 0x8E | 3 << 5);
+    init_isr_handlers();
+
+>>>>>>> main
     // Load the new IDT
     __asm__ volatile ("lidt %0" : : "m"(idtr));
 
