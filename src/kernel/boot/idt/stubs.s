@@ -81,13 +81,6 @@ isr_no_err_stub 29   // Reserved
 isr_no_err_stub 30   // Security Exception
 isr_no_err_stub 31   // Reserved
 
-<<<<<<< HEAD
-.global isr_stub_table
-isr_stub_table:
-    .rept 32
-        .long isr_stub_0   // Start with ISR stub 0
-    .endr
-=======
 // External IRQs
 isr_no_err_stub 32   // IRQ0
 isr_no_err_stub 33   // IRQ1
@@ -121,4 +114,3 @@ isr_stub_table:
     isr_labelX %i
     .set i, i+1
 .endr
->>>>>>> main

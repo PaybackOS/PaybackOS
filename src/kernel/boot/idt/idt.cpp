@@ -35,16 +35,6 @@ void idt_set_descriptor(uint8_t vector, uintptr_t isr, uint8_t flags) {
 extern void* isr_stub_table[];  // External ISR stubs
 
 void idt_init(void) {
-<<<<<<< HEAD
-    idtr.base = (uint32_t)&idt;  
-    idtr.limit = (sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS) - 1;  
-
-    // Set the first 32 vectors (exceptions)
-    for (uint8_t vector = 0; vector < 32; vector++) {
-        idt_set_descriptor(vector, (uintptr_t)isr_stub_table[vector], 0x8E);
-    }
-
-=======
     idtr.base = (uint32_t)&idt;
     idtr.limit = (sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS) - 1;
 
@@ -57,7 +47,6 @@ void idt_init(void) {
     idt_set_descriptor(0, (uintptr_t)isr_stub_table[0], 0x8E | 3 << 5);
     init_isr_handlers();
 
->>>>>>> main
     // Load the new IDT
     __asm__ volatile ("lidt %0" : : "m"(idtr));
 
