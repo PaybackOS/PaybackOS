@@ -44,15 +44,7 @@ void PIC_init(void) {
     io_wait();
 
     // Mask off all interrupts
-<<<<<<< HEAD
-    outb(PIC_DATA_PORT_MASTER, 0xFF);
-    outb(PIC_DATA_PORT_SLAVE, 0xFF);
-
-    // Small delay to ensure proper timing
-    for (volatile int i = 0; i < 100000; i++) {}
-=======
     // As a test onlyenable Keyboard Interrupts
     outb(PIC_DATA_PORT_MASTER, 0xFD);
     outb(PIC_DATA_PORT_SLAVE, 0xFF);
->>>>>>> main
 }
