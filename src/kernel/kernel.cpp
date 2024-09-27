@@ -5,7 +5,11 @@
 void init_gdt();
 void idt_init(void);
 void PIC_init();
+void set_kernel_stack(uint32_t);
+
 extern "C" void switch_to_user_mode();
+
+uint8_t esp0_stack[4096] __attribute__((aligned(4096)));
 
 extern "C" void _init() {
     // Init the VGA interface
@@ -13,13 +17,18 @@ extern "C" void _init() {
     klog(1, "VGA interface started");
     // Init the GDT
     init_gdt();
+    // Set kernel stack for transitions from usermode
+    // This stack is by default set to 0 which is not
+    // a usable memory location when it wraps to top of
+    // memory.
+    set_kernel_stack((uint32_t)esp0_stack + sizeof(esp0_stack));
     klog(1, "GDT loaded");
+    // Init the PIC before idt_init!
+    PIC_init();
+    klog(1, "PIC started");
     // Init the IDT
     idt_init();
     klog(1, "IDT loaded");
-    // Init the PIC
-    PIC_init();
-    klog(1, "PIC started");
     //Move to our userspace
     switch_to_user_mode();
 }
