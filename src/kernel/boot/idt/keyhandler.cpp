@@ -45,7 +45,10 @@ void key_translate(uint8_t scancode) {
         } else {
             // Store the key in the global variable
             last_key = key;
-            vga::print(&key);  // Print the valid character to the terminal
+
+            // Stor the key in a NUL terminated string to print
+            char key_buf[] = { key, '\0' };
+            vga::print(key_buf);  // Print the valid character to the terminal
         }
     }
 }

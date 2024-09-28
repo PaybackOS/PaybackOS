@@ -33,7 +33,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 iso: build
 	mkdir -p iso/boot/grub/
 	cp grub.cfg iso/boot/grub/
-	mv $(TARGET) iso/boot/
+	cp $(TARGET) iso/boot/
 	grub-mkrescue iso/ -o PaybackOS.iso
 	rm -rf iso
 
