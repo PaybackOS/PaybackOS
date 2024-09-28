@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include "keyhandler.h"
 #include <tty.hpp>
 #include <stddef.h> // For NULL
@@ -36,21 +37,8 @@ void key_translate(uint8_t scancode) {
 
     // Get the character from the scancode table
     char key = scancode_table[scancode];
-
-    // Only process the key if it's valid (non-zero)
-    if (key) {
-        if (key == '\b') {
-            // Handle backspace: You can implement your backspace logic here
-            vga::print("\b");
-        } else {
-            // Store the key in the global variable
-            last_key = key;
-
-            // Store the key in a NUL terminated string to print
-            char key_buf[] = { key, '\0' };
-            vga::print(key_buf);  // Print the valid character to the terminal
-        }
-    }
+    vga::putchar(key);
+    last_key = key;
 }
 
 // Function to retrieve the last keypress (blocking)

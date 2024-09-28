@@ -1,3 +1,4 @@
+#include <tty.hpp>
 #include <stdio.hpp>
 #include <stdint.h>
 #include "port.h"
@@ -105,6 +106,9 @@ void __attribute__((noreturn)) divbyzero_handler(stack_frame_t *frame)
 void syscall_handler(stack_frame_t *frame) {
     if (frame->eax == 1) {
         printf("%s", frame->ebx);
+        return;
+    } else if (frame->eax == 2) {
+        vga::putchar(frame->ebx);
         return;
     }
     return;

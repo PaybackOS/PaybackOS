@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.hpp>
 
 extern "C" void print(const char* msg);
 
