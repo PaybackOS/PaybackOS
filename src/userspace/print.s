@@ -1,8 +1,8 @@
-.global syscall      # Make the function globally accessible
-.type syscall, @function
+.global print      # Make the function globally accessible
+.type print, @function
 
-syscall:
-    movl 4(%esp), %eax  # Move the first argument (number) into eax
-    movl 8(%esp), %ebx  # Move the second argument (string) into ebx
+print:
+    movl $1, %eax        # Set the system call number to 1 (write)
+    movl 4(%esp), %ebx  # Load the first argument (address of the string)
     int $80             # Trigger the interrupt
     ret                 # Return to the calling function
