@@ -5,7 +5,6 @@
 #include "idtcommon.hpp"
 
 void register_isr_handler(uint8_t num, isr_t handler);
-extern "C" void syscall_stub();
 
 isr_t isr_dispatch_table[256] = { nullptr };
 
@@ -53,7 +52,7 @@ void register_isr_handler(uint8_t num, isr_t handler)
 }
 void __attribute__((noreturn)) default_exception_handler(stack_frame_t *frame)
 {
-    if (frame->int_num <= sizeof(exception_descriptions)/sizeof(*exception_descriptions))
+    if (frame->int_num < sizeof(exception_descriptions)/sizeof(*exception_descriptions))
         klog(3, exception_descriptions[frame->int_num]);
     else
         klog(3, "Unknown exception");
@@ -62,7 +61,7 @@ void __attribute__((noreturn)) default_exception_handler(stack_frame_t *frame)
     while(1) __asm__ __volatile__ ("hlt");
 }
 
-void send_eoi(uint16_t irq)
+void send_eoi(uint8_t irq)
 {
     // Send EOI to master and slave if necessary
     if (irq >= 8)
@@ -74,7 +73,7 @@ void send_eoi(uint16_t irq)
 
 void default_irq_handler(stack_frame_t *frame)
 {
-    uint16_t irq_number = frame->int_num - 32;
+    uint8_t irq_number = frame->int_num - 32;
     klog(1, "External Interrupt Received");
 
     send_eoi(irq_number);
@@ -82,7 +81,7 @@ void default_irq_handler(stack_frame_t *frame)
 }
 
 void keyboard_handler(stack_frame_t *frame) {
-    uint16_t irq_number = frame->int_num - 32;
+    uint8_t irq_number = frame->int_num - 32;
 
     // Retrive scancode from keyboard buffer.
     // For every keyboard interrupt we must read port 0x60
@@ -103,11 +102,16 @@ void __attribute__((noreturn)) divbyzero_handler(stack_frame_t *frame)
 }
 
 
-extern "C" void syscall_handler() {
+void syscall_handler(stack_frame_t *frame)
+{
+    (void)frame; // Silence warning about frame being unused
+
     klog(1, "Syscall received");
     // Handle the system call here
     klog(1, "Syscall handled");
+    return;
 }
+
 void init_isr_handlers()
 {
     for (int index = 0; index < 32; index++)
@@ -118,7 +122,7 @@ void init_isr_handlers()
 
     register_isr_handler(0, divbyzero_handler);
     register_isr_handler(33, keyboard_handler);
-    register_isr_handler(80, reinterpret_cast<isr_t>(syscall_stub));
+    register_isr_handler(80, syscall_handler);
 }
 
 extern "C" void C_handler(stack_frame_t *frame)

@@ -1,6 +1,4 @@
 .extern C_handler
-.global syscall_stub
-.extern syscall_handler
 .section .text
 
 // Define ISR stubs for exceptions with error
@@ -18,34 +16,6 @@ isr_stub_\num:
     pushl $\num
     jmp common_isr_stub
 .endm
-
-syscall_stub:
-    pushl $0        // Push Dummy error code
-    pushl $80       // Push interrupt number
-
-    pusha           // Push all general purpose registers
-    push %ds
-    push %es
-    push %fs
-    push %gs
-
-    // Switch to kernel data segments
-    mov $0x10, %ax
-    mov %ax, %ds
-    mov %ax, %es
-    mov %ax, %fs
-    mov %ax, %gs
-
-    call syscall_handler
-
-    pop %gs
-    pop %fs
-    pop %es
-    pop %ds
-    popa
-
-    add $8, %esp    // Clean up error code and interrupt number
-    iret            // Return from interrupt
 
 common_isr_stub:
     xchg %bx, %bx
@@ -110,27 +80,6 @@ isr_no_err_stub 29   // Reserved
 isr_no_err_stub 30   // Security Exception
 isr_no_err_stub 31   // Reserved
 
-// External IRQs
-isr_no_err_stub 32   // IRQ0
-isr_no_err_stub 33   // IRQ1
-isr_no_err_stub 34   // IRQ2
-isr_no_err_stub 35   // IRQ3
-isr_no_err_stub 36   // IRQ4
-isr_no_err_stub 37   // IRQ5
-isr_no_err_stub 38   // IRQ6
-isr_no_err_stub 39   // IRQ7
-
-isr_no_err_stub 40   // IRQ8
-isr_no_err_stub 41   // IRQ9
-isr_no_err_stub 42   // IRQ10
-isr_no_err_stub 43   // IRQ11
-isr_no_err_stub 44   // IRQ12
-isr_no_err_stub 45   // IRQ13
-isr_no_err_stub 46   // IRQ14
-isr_no_err_stub 47   // IRQ15
-
-isr_no_err_stub 80
-
 .global isr_stub_table
 
 .section .data
@@ -139,9 +88,23 @@ isr_no_err_stub 80
     .long isr_stub_\number
 .endm
 
+// Create a stub table of 256 entries
 isr_stub_table:
+// Handle first 32 exceptions
 .set i,0
-.rept 48
+.rept 32
+    isr_labelX %i
+    .set i, i+1
+.endr
+
+// Create stubs for the remaining interrupts incuding IRQs
+// All of them have no error code
+.set i,32
+.rept 256-32
+    .section .text
+    isr_no_err_stub %i
+
+    .section .data
     isr_labelX %i
     .set i, i+1
 .endr
