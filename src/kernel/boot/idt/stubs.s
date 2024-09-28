@@ -110,7 +110,7 @@ isr_stub_table:
     .section .text
     isr_no_err_stub %i
 
-    // Switch bakc and generate an entry i isr_stub_table
+    // Switch back and generate an entry in isr_stub_table
     .section .data
     isr_labelX %i
     .set i, i+1
