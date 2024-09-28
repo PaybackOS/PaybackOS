@@ -1,5 +1,6 @@
 .extern C_handler
-
+.global syscall_stub
+.extern syscall_handler
 .section .text
 
 // Define ISR stubs for exceptions with error
@@ -17,6 +18,34 @@ isr_stub_\num:
     pushl $\num
     jmp common_isr_stub
 .endm
+
+syscall_stub:
+    pushl $0        // Push Dummy error code
+    pushl $80       // Push interrupt number
+
+    pusha           // Push all general purpose registers
+    push %ds
+    push %es
+    push %fs
+    push %gs
+
+    // Switch to kernel data segments
+    mov $0x10, %ax
+    mov %ax, %ds
+    mov %ax, %es
+    mov %ax, %fs
+    mov %ax, %gs
+
+    call syscall_handler
+
+    pop %gs
+    pop %fs
+    pop %es
+    pop %ds
+    popa
+
+    add $8, %esp    // Clean up error code and interrupt number
+    iret            // Return from interrupt
 
 common_isr_stub:
     xchg %bx, %bx
@@ -99,6 +128,8 @@ isr_no_err_stub 44   // IRQ12
 isr_no_err_stub 45   // IRQ13
 isr_no_err_stub 46   // IRQ14
 isr_no_err_stub 47   // IRQ15
+
+isr_no_err_stub 80
 
 .global isr_stub_table
 

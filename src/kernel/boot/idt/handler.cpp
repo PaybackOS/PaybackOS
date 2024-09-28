@@ -5,6 +5,7 @@
 #include "idtcommon.hpp"
 
 void register_isr_handler(uint8_t num, isr_t handler);
+extern "C" void syscall_stub();
 
 isr_t isr_dispatch_table[256] = { nullptr };
 
@@ -101,6 +102,12 @@ void __attribute__((noreturn)) divbyzero_handler(stack_frame_t *frame)
     while(1) __asm__ __volatile__ ("hlt");
 }
 
+
+extern "C" void syscall_handler() {
+    klog(1, "Syscall received");
+    // Handle the system call here
+    klog(1, "Syscall handled");
+}
 void init_isr_handlers()
 {
     for (int index = 0; index < 32; index++)
@@ -111,12 +118,26 @@ void init_isr_handlers()
 
     register_isr_handler(0, divbyzero_handler);
     register_isr_handler(33, keyboard_handler);
+    register_isr_handler(80, reinterpret_cast<isr_t>(syscall_stub));
 }
 
 extern "C" void C_handler(stack_frame_t *frame)
 {
-    if (isr_dispatch_table[frame->int_num] != nullptr)
-        isr_dispatch_table[frame->int_num](frame);
+    klog(1, "Interrupt received");
+    
+    if (frame->int_num >= 256) {
+        klog(3, "Invalid interrupt number");
+        return;
+    }
+    
+    if (isr_dispatch_table[frame->int_num] == nullptr) {
+        klog(3, "No handler registered");
+        return;
+    }
+    
+    klog(1, "Calling handler");
+    isr_dispatch_table[frame->int_num](frame);
 
+    klog(1, "Handler completed");
     return;
 }
