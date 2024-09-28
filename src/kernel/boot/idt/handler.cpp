@@ -102,13 +102,11 @@ void __attribute__((noreturn)) divbyzero_handler(stack_frame_t *frame)
 }
 
 
-void syscall_handler(stack_frame_t *frame)
-{
-    (void)frame; // Silence warning about frame being unused
-
-    klog(1, "Syscall received");
-    // Handle the system call here
-    klog(1, "Syscall handled");
+void syscall_handler(stack_frame_t *frame) {
+    if (frame->eax == 1) {
+        printf("%s", frame->ebx);
+        return;
+    }
     return;
 }
 
@@ -125,10 +123,7 @@ void init_isr_handlers()
     register_isr_handler(80, syscall_handler);
 }
 
-extern "C" void C_handler(stack_frame_t *frame)
-{
-    klog(1, "Interrupt received");
-    
+extern "C" void C_handler(stack_frame_t *frame) {    
     if (frame->int_num >= 256) {
         klog(3, "Invalid interrupt number");
         return;
@@ -138,10 +133,6 @@ extern "C" void C_handler(stack_frame_t *frame)
         klog(3, "No handler registered");
         return;
     }
-    
-    klog(1, "Calling handler");
     isr_dispatch_table[frame->int_num](frame);
-
-    klog(1, "Handler completed");
     return;
 }

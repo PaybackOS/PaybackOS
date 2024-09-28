@@ -1,9 +1,9 @@
 #include <stdint.h>
-#include <stdio.hpp>
+
+extern "C" void print(const char* msg);
 
 extern "C" void userspace_c(void) {
-    // asm("cli"); // This code should cause a GPF since we are in ring 3.
-    asm("int $80");
+    print("This message is from the userspace\n");
     while(1) {
     }
 }
