@@ -15,4 +15,4 @@ switch_to_user_mode:
     pushf                       // Push flags
     push $0x1b                  // Push the code selector (for ring 3)
     push $userspace_c           // Push instruction address to return to
-    iret
+    iret // Use a interrupt return to trick the CPU into thinking we were already in usermode

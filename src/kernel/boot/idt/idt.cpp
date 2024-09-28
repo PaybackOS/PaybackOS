@@ -28,7 +28,7 @@ void idt_set_descriptor(uint8_t vector, uintptr_t isr, uint8_t flags) {
     idt_entry_t* descriptor = &idt[vector];  // Get the descriptor for the vector
 
     descriptor->isr_low    = isr & 0xFFFF;     // Lower 16 bits of the ISR address
-    descriptor->kernel_cs  = 0x08;              // Kernel code segment selector (adjust based on your GDT)
+    descriptor->kernel_cs  = 0x08;              // Kernel code segment selector
     descriptor->attributes = flags;             // Type and attributes (e.g., 0x8E for interrupt gate)
     descriptor->isr_high   = (isr >> 16) & 0xFFFF;  // Higher 16 bits of the ISR address
     descriptor->reserved   = 0;                  // Reserved is always 0
@@ -47,7 +47,6 @@ void idt_init(void) {
 
     //Set divbyzero DPL=3 to allow "int 0" software interrupt
     idt_set_descriptor(0, (uintptr_t)isr_stub_table[0], 0x8E | 3 << 5);
-    idt_set_descriptor(80, (uintptr_t)isr_stub_table[80], 0x8E | 3 << 5);
 
     init_isr_handlers();
 
