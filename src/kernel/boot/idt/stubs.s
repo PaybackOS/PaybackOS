@@ -97,8 +97,8 @@ isr_stub_table:
     .set i, i+1
 .endr
 
-// Create stubs for the remaining interrupts incuding IRQs
-// All of them have no error code
+// Create stubs for the remaining 224 interrupts including IRQs
+// All of them have no error code pushed by the CPU on the stack
 .set i,32
 .rept 256-32
     .section .text
