@@ -114,7 +114,7 @@ void syscall_handler(stack_frame_t *frame)
 
 void init_isr_handlers()
 {
-    for (int index = 0; index < 32; index++)
+    for (int index = 0; index < 256; index++)
         isr_dispatch_table[index] = default_exception_handler;
 
     for (int index = 32; index < 48; index++)
