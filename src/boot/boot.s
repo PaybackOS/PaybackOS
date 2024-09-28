@@ -24,7 +24,7 @@ This is a simple stack for our OS to use since C requires a stack to function
 .section .bss
 .align 16
 stack_bottom:
-.skip 16384 # 16 KiB
+.skip 32768 # 32 KiB
 stack_top:
 
 .section .text

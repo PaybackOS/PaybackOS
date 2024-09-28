@@ -1,19 +1,13 @@
 #include <stdio.hpp>
 #include <stdint.h>
 #include "port.h"
+#include "keyhandler.h"
+#include "idtcommon.hpp"
 
-typedef struct
-{
-	uint32_t gs, fs, es, ds;
-	uint32_t edi, esi, ebp, useless_esp, ebx, edx, ecx, eax;
-	uint32_t int_num, err_code;
-	uint32_t eip, cs, eflags, useresp, ss;
-} __attribute__((packed)) stack_frame_t;
-
-typedef void (*isr_t)(stack_frame_t*);
 void register_isr_handler(uint8_t num, isr_t handler);
 
 isr_t isr_dispatch_table[256] = { nullptr };
+
 const char *exception_descriptions[] = {
     "Division By Zero",
     "Debug",
@@ -86,15 +80,14 @@ void default_irq_handler(stack_frame_t *frame)
     return;
 }
 
-void keyboard_handler(stack_frame_t *frame)
-{
+void keyboard_handler(stack_frame_t *frame) {
     uint16_t irq_number = frame->int_num - 32;
-    klog(1, "Keyboard interrupt received");
 
     // Retrive scancode from keyboard buffer.
     // For every keyboard interrupt we must read port 0x60
     //     otherwise we will not get further keystrokes
-    inb(0x60);
+    uint8_t scancode = inb(0x60);
+    key_translate(scancode);
 
     send_eoi(irq_number);
     return;
