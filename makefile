@@ -3,7 +3,7 @@ include make.config
 # Define variables
 SRC_DIR = src
 OBJ_DIR = obj
-TARGET = PaybackOS.bin
+TARGET = PaybackOS.elf
 
 # Automatically find all source files
 SRCS := $(shell find $(SRC_DIR) -name '*.cpp' -o -name '*.s' -o -name '*.asm')
