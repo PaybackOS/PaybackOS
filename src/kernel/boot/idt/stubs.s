@@ -18,7 +18,9 @@ isr_stub_\num:
 .endm
 
 common_isr_stub:
-    xchg %bx, %bx
+//  Uncomment to create a BOCHS magic breakpoint
+//  xchg %bx, %bx
+
     pushal
     pushl %ds
     pushl %es
@@ -33,18 +35,19 @@ common_isr_stub:
     mov %eax, %gs
 
     cld
-    push %esp
-    call C_handler  // Call the common exception handler for errors
-    pop %eax
+    push %esp        // Arg 1 is a pointer to the interrupt stack_frame
+    call C_handler   // Call the common exception handler for errors
+    pop %eax         // Remove argument from stack
 
+    // Restore segment registers
     popl %gs
     popl %fs
     popl %es
     popl %ds
     popal
 
-    add $8, %esp
-    iret                    // Return from interrupt
+    add $8, %esp     // Remove interrupt numnber and error code
+    iret             // Return from interrupt
 
 // Define stubs for exceptions (interrupts 0-31)
 isr_no_err_stub 0    // Divide by Zero
@@ -80,30 +83,34 @@ isr_no_err_stub 29   // Reserved
 isr_no_err_stub 30   // Security Exception
 isr_no_err_stub 31   // Reserved
 
-.global isr_stub_table
-
-.section .data
+// isr_labelX is a macro that generates a 32-bit long
+// pointing to an isr_stub_NNN stub function.
 .altmacro
 .macro isr_labelX number
     .long isr_stub_\number
 .endm
 
+.global isr_stub_table
+.section .data
+
 // Create a stub table of 256 entries
 isr_stub_table:
-// Handle first 32 exceptions
+// Create entries for the first 32 exceptions
 .set i,0
 .rept 32
     isr_labelX %i
     .set i, i+1
 .endr
-
-// Create stubs for the remaining 224 interrupts including IRQs
-// All of them have no error code pushed by the CPU on the stack
-.set i,32
+// Create entries in isr_stub_table for the remaining 224 interrupts
+// including IRQs (from 32 to 48). Generate the stub code for each
+// entry at the same time. All these stubs have no error code
+// pushed by the CPU on the stack.
 .rept 256-32
+    // Generate stub code for this isr
     .section .text
     isr_no_err_stub %i
 
+    // Switch bakc and generate an entry i isr_stub_table
     .section .data
     isr_labelX %i
     .set i, i+1
