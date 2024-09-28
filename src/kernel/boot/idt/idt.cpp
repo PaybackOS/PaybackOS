@@ -40,8 +40,8 @@ void idt_init(void) {
     idtr.base = (uint32_t)&idt;
     idtr.limit = (sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS) - 1;
 
-    // Set the first 32 vectors (exceptions)
-    for (uint8_t vector = 0; vector < 48; vector++) {
+    // Set up the default stub handlers for all 256 interrupts
+    for (uint16_t vector = 0; vector < IDT_MAX_DESCRIPTORS; vector++) {
         idt_set_descriptor(vector, (uintptr_t)isr_stub_table[vector], 0x8E);
     }
 
