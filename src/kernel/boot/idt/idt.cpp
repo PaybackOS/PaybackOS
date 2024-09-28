@@ -45,8 +45,9 @@ void idt_init(void) {
         idt_set_descriptor(vector, (uintptr_t)isr_stub_table[vector], 0x8E);
     }
 
-    //Set divbyzero DPL=3 to allow "int 0" software interrupt
+    //Set divbyzero DPL=3 to allow "int 0" software interrupt from usermode
     idt_set_descriptor(0, (uintptr_t)isr_stub_table[0], 0x8E | 3 << 5);
+    //Set syscall DPL=3 to allow "int 80" software interrupt from usermode
     idt_set_descriptor(80, (uintptr_t)isr_stub_table[80], 0x8E | 3 << 5);
 
     init_isr_handlers();
