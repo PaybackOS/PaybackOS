@@ -1,4 +1,5 @@
 #include <stdio.hpp>
+#include <stdlib.hpp>
 #include <vfs.h>
 
 extern "C" void userspace_c(void) {
