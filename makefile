@@ -17,7 +17,7 @@ OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(patsubst $(SRC_DIR)/%.s,$(O
 USERSPACE_OBJS := $(patsubst $(USERSPACE_DIR)/%.cpp,$(OBJ_DIR)/userspace/%.o,$(patsubst $(USERSPACE_DIR)/%.s,$(OBJ_DIR)/userspace/%.o,$(patsubst $(USERSPACE_DIR)/%.asm,$(OBJ_DIR)/userspace/%.o,$(USERSPACE_SRCS))))
 
 # Ensure the object directory exists
-$(shell mkdir -p $(OBJ_DIR))
+$(shell mkdir -p $(OBJ_DIR)/userspace)
 
 # Define the build rules
 build: $(OBJS) $(USERSPACE_OBJS)

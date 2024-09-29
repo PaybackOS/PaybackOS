@@ -17,7 +17,7 @@ all other registers should be considered free game other than the pointer
 */
 void syscall_handler(stack_frame_t *frame) {
     if (frame->eax == 1) {
-        printf("%s", frame->ebx);
+        kprintf("%s", frame->ebx);
         return;
     } else if (frame->eax == 2) {
         vga::putchar(frame->ebx);

@@ -5,7 +5,7 @@ using vga::print;
 using vga::putchar;
 
 // Helper function to print an integer in base 10
-void print_int(int num) {
+void kprint_int(int num) {
     char buffer[10];  // Enough for a 32-bit int
     int i = 0;
 
@@ -33,7 +33,7 @@ void print_int(int num) {
 }
 
 // Helper function to print an integer in hexadecimal
-void print_hex(unsigned int num) {
+void kprint_hex(unsigned int num) {
     char hex_digits[] = "0123456789ABCDEF";
     char buffer[8];  // Enough for a 32-bit int in hexadecimal
     int i = 0;
@@ -55,8 +55,8 @@ void print_hex(unsigned int num) {
     }
 }
 
-// The actual printf function
-void printf(const char *fmt, ...) {
+// The actual kprintf function
+void kprintf(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
 
@@ -76,13 +76,13 @@ void printf(const char *fmt, ...) {
                 }
                 case 'd': {
                     int num = va_arg(args, int);
-                    print_int(num);
+                    kprint_int(num);
                     break;
                 }
                 case 'x': {
                     unsigned int num = va_arg(args, unsigned int);
                     print("0x");
-                    print_hex(num);
+                    kprint_hex(num);
                     break;
                 }
                 default: {
