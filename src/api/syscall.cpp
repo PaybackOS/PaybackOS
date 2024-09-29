@@ -1,11 +1,19 @@
-#include <liballoc.h> // Include your memory allocation functions
+#include <stdint.h>
+#include <tty.hpp>
+#include <stdio.hpp>
+// Define our registers that we can use in our syscall handler
+typedef struct
+{
+	uint32_t gs, fs, es, ds;
+	uint32_t edi, esi, ebp, useless_esp, ebx, edx, ecx, eax;
+	uint32_t int_num, err_code;
+	uint32_t eip, cs, eflags, useresp, ss;
+} __attribute__((packed)) stack_frame_t;
 
 // Define syscalls
 #define SYSCALL_PRINT 1
 #define SYSCALL_PUTCHAR 2
 #define SYSCALL_LOG 3
-#define SYSCALL_MALLOC 4
-#define SYSCALL_FREE 5
 
 void syscall_handler(stack_frame_t *frame) {
     if (frame->eax == SYSCALL_PRINT) {
@@ -16,16 +24,6 @@ void syscall_handler(stack_frame_t *frame) {
         return;
     } else if (frame->eax == SYSCALL_LOG) {
         klog(frame->ebx, (const char*)frame->ecx); // Logging
-        return;
-    } else if (frame->eax == SYSCALL_MALLOC) {
-        int size = frame->ebx; // Size to allocate (assuming ebx contains the size)
-        void* ptr = malloc(size); // Call your custom malloc function
-        frame->eax = (uint32_t)ptr; // Return the allocated pointer in eax
-        return;
-    } else if (frame->eax == SYSCALL_FREE) {
-        void* ptr = (void*)frame->ebx; // Pointer to free (assuming ebx contains the pointer)
-        int result = free(ptr); // Call your custom free function (ecx for size)
-        frame->eax = result; // Return result (0 for success, -1 for failure) in eax
         return;
     }
     return; // If no valid syscall number, do nothing

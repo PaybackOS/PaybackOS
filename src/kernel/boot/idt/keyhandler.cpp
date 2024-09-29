@@ -6,6 +6,7 @@
 // Global variable to store the last pressed key
 volatile char last_key = '\0';
 volatile bool shift_pressed = false; // Track shift key state
+volatile bool movekey = false; // Track move key state
 
 // Scancode translation table (lowercase letters, numbers, and basic keys)
 static char scancode_table[128] = {
@@ -76,20 +77,26 @@ void key_translate(uint8_t scancode) {
         return;
     }
 
-    // Handle arrow keys (0x48, 0x50, 0x4B, 0x4D for up, down, left, right respectively)
-    switch (scancode) {
-        case 0x48: // Up Arrow
-            vga::move_cursor_up();
-            return;
-        case 0x50: // Down Arrow
-            vga::move_cursor_down();
-            return;
-        case 0x4B: // Left Arrow
+    if (movekey == true) {
+        if (scancode == 0x4B) {
             vga::move_cursor_left();
-            return;
-        case 0x4D: // Right Arrow
+            movekey = false;
+        }
+        if (scancode == 0x4D) {
             vga::move_cursor_right();
-            return;
+            movekey = false;
+        }
+        if (scancode == 0x48) {
+            vga::move_cursor_up();
+            movekey = false;
+        }
+        if (scancode == 0x50) {
+            vga::move_cursor_down();
+            movekey = false;
+        }
+        return;
+    } else {
+        return;
     }
 
     // Get the correct character based on the shift state
