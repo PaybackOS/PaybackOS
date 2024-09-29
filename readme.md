@@ -11,5 +11,5 @@ PaybackOS is a simple hobby Operating System written from scratch for older devi
 - [x] Memory allocation (malloc, free, realloc, calloc)
 - [x] A start of the standard library
 - [x] A simple user mode part of the kernel
-- [ ] A way for the userspace to call the kernel API (printing to the screen) see more at [api.md](goals/api.md)
+- [x] A way for the userspace to call the kernel API (printing to the screen) see more at [api.md](goals/api.md)
 - [ ] A disk driver
