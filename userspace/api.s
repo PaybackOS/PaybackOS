@@ -1,5 +1,6 @@
 .global print
 .global putchar
+.global klog
 .type print, @function
 
 print:
@@ -13,3 +14,10 @@ putchar:
     movl 4(%esp), %ebx  # Load the first argument (character to write)
     int $80             # Trigger the interrupt
     ret                 # Return to the calling function
+
+klog:
+    movl $3, %eax # Move the int number to eax
+    movl 4(%esp), %ebx # Move the int for the log level to the first argument
+    movl 8(%esp), %ecx # Move the const char* for the log to the 2nd argument
+    int $80
+    ret

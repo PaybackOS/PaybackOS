@@ -5,6 +5,7 @@
 extern "C" {
     void print(const char* str);
     void putchar(char c);
+    void klog(int level, const char* msg);
 }
 
 #endif

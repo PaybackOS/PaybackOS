@@ -22,6 +22,16 @@ void syscall_handler(stack_frame_t *frame) {
     } else if (frame->eax == 2) {
         vga::putchar(frame->ebx);
         return;
+    } else if (frame->eax == 3) {
+        // Log our log level and our log itself
+        if (frame->ebx == 1) {
+            klog(1, (const char*)frame->ecx);
+        } else if (frame->ebx == 2) {
+            klog(2, (const char*)frame->ecx);
+        } else if (frame->ebx == 3) {
+            klog(3, (const char*)frame->ecx);
+        }
+        return;
     }
     return;
 }
