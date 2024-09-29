@@ -1,5 +1,5 @@
-.global print      # Make the function globally accessible
-.global putchar       # Make the function globally accessible
+.global print
+.global putchar
 .type print, @function
 
 print:
@@ -13,6 +13,3 @@ putchar:
     movl 4(%esp), %ebx  # Load the first argument (character to write)
     int $80             # Trigger the interrupt
     ret                 # Return to the calling function
-
-.section .bss
-buffer: .space 1        # Reserve 1 byte for the input buffer

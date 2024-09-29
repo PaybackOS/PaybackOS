@@ -6,6 +6,7 @@
 #include "idtcommon.hpp"
 
 void register_isr_handler(uint8_t num, isr_t handler);
+void syscall_handler(stack_frame_t *frame);
 
 isr_t isr_dispatch_table[256] = { nullptr };
 
@@ -100,18 +101,6 @@ void __attribute__((noreturn)) divbyzero_handler(stack_frame_t *frame)
     klog(3, exception_descriptions[frame->int_num]);
 
     while(1) __asm__ __volatile__ ("hlt");
-}
-
-
-void syscall_handler(stack_frame_t *frame) {
-    if (frame->eax == 1) {
-        printf("%s", frame->ebx);
-        return;
-    } else if (frame->eax == 2) {
-        vga::putchar(frame->ebx);
-        return;
-    }
-    return;
 }
 
 void init_isr_handlers()

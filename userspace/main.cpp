@@ -1,6 +1,4 @@
-#include <stdint.h>
-
-extern "C" void print(const char* msg);
+#include <stdio.hpp>
 
 extern "C" void userspace_c(void) {
     print("This message is from the userspace\n");

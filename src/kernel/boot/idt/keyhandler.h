@@ -5,5 +5,5 @@
 
 // Function to translate scancode into characters
 void key_translate(uint8_t scancode);
-char getch();
+
 #endif

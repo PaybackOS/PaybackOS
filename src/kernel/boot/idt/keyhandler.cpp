@@ -4,7 +4,8 @@
 #include <stddef.h> // For NULL
 
 // Global variable to store the last pressed key
-volatile char last_key = 0;
+volatile char last_key = '\0';
+volatile bool shift_pressed = false; // Track shift key state
 
 // Scancode translation table (lowercase letters, numbers, and basic keys)
 static char scancode_table[128] = {
@@ -16,9 +17,31 @@ static char scancode_table[128] = {
     0,                                               // 0x1D: Left Ctrl (ignored)
     'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', // 0x1E - 0x27: a-l
     '\'', '`',                                        // 0x28 - 0x29: ', `
-    0,                                               // 0x2A: Left Shift (ignored)
+    0,                                               // 0x2A: Left Shift
     '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', // 0x2B - 0x35: z-m, , . /
-    0,                                               // 0x36: Right Shift (ignored)
+    0,                                               // 0x36: Right Shift
+    '*',                                             // 0x37: Keypad *
+    0,                                               // 0x38: Left Alt (ignored)
+    ' ',                                             // 0x39: Space
+    0,                                               // 0x3A: Caps Lock (ignored)
+    0, 0, 0, 0, 0, 0, 0, 0,                          // 0x3B - 0x42: (function keys ignored)
+    0, 0,                                            // 0x43 - 0x44: (function keys ignored)
+    0, 0, 0, 0, 0, 0, 0, 0                           // Unused keys
+};
+
+// Scancode translation table for shift (uppercase letters, symbols)
+static char scancode_table_shift[128] = {
+    0, 27, '!', '@', '#', '$', '%', '^', '&', '*',   // 0x00 - 0x09: ESC, !-*
+    '(', ')', '_', '+', '\b',                        // 0x0A - 0x0E: (, ), _, +, Backspace
+    '\t',                                            // 0x0F: Tab
+    'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', // 0x10 - 0x19: Q-P
+    '{', '}', '\n',                                  // 0x1A - 0x1C: {, }, Enter
+    0,                                               // 0x1D: Left Ctrl (ignored)
+    'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', // 0x1E - 0x27: A-L
+    '"', '~',                                        // 0x28 - 0x29: ", ~
+    0,                                               // 0x2A: Left Shift
+    '|', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', // 0x2B - 0x35: Z-M, <, >, ?
+    0,                                               // 0x36: Right Shift
     '*',                                             // 0x37: Keypad *
     0,                                               // 0x38: Left Alt (ignored)
     ' ',                                             // 0x39: Space
@@ -30,27 +53,53 @@ static char scancode_table[128] = {
 
 // Function to translate scancode and handle key actions
 void key_translate(uint8_t scancode) {
-    // Ignore key releases (scancode & 0x80 means key release)
+    // Check for key release (scancode & 0x80 means key release)
     if (scancode & 0x80) {
+        // Handle shift key release
+        if (scancode == 0xAA || scancode == 0xB6) {
+            shift_pressed = false;
+        }
         return;
     }
 
-    // Get the character from the scancode table
-    char key = scancode_table[scancode];
-    vga::putchar(key);
-    last_key = key;
-}
-
-// Function to retrieve the last keypress (blocking)
-char getch() {
-    // Wait until a key is pressed (last_key is set by the keyboard handler)
-    while (last_key == 0) {
-        // Busy wait (in a real system, you might want to yield CPU time)
+    // Handle shift key press
+    if (scancode == 0x2A || scancode == 0x36) {
+        shift_pressed = true;
+        return;
     }
 
-    // Capture the key and reset last_key to 0 for the next keypress
-    char key = last_key;
-    last_key = 0;
+    // Handle Backspace (scancode 0x0E)
+    if (scancode == 0x0E) {
+        vga::putchar('\b'); // Move cursor back
+        vga::putchar(' ');  // Erase the character
+        vga::putchar('\b'); // Move cursor back again
+        return;
+    }
 
-    return key;
+    // Handle arrow keys (0x48, 0x50, 0x4B, 0x4D for up, down, left, right respectively)
+    switch (scancode) {
+        case 0x48: // Up Arrow
+            vga::move_cursor_up();
+            return;
+        case 0x50: // Down Arrow
+            vga::move_cursor_down();
+            return;
+        case 0x4B: // Left Arrow
+            vga::move_cursor_left();
+            return;
+        case 0x4D: // Right Arrow
+            vga::move_cursor_right();
+            return;
+    }
+
+    // Get the correct character based on the shift state
+    char key;
+    if (shift_pressed) {
+        key = scancode_table_shift[scancode];
+    } else {
+        key = scancode_table[scancode];
+    }
+    
+    last_key = key;
+    vga::putchar(key);
 }

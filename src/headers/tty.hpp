@@ -30,6 +30,10 @@ namespace vga {
 	void terminal_setcolor(uint8_t color);
 	void putchar(char c);
 	void print(const char* data);
+    void move_cursor_left();
+    void move_cursor_right();
+	void move_cursor_down();
+	void move_cursor_up();
 }
 
 #endif

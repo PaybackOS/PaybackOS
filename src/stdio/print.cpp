@@ -103,6 +103,15 @@ namespace vga {
             if (++terminal_row == VGA_HEIGHT) {
                 terminal_scroll();
             }
+        } else if (c == '\b') {
+            if (terminal_column > 0) {
+                --terminal_column; // Move cursor back
+            } else if (terminal_row > 0) {
+                --terminal_row; // Move to the end of the previous line
+                terminal_column = VGA_WIDTH - 1;
+            }
+            terminal_putentryat(' ', terminal_color, terminal_column, terminal_row); // Erase character
+            update_cursor(terminal_column, terminal_row); // Update cursor position
         } else {
             terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
             if (++terminal_column == VGA_WIDTH) {
@@ -126,5 +135,38 @@ namespace vga {
             putchar(*data);
             data++;
         }
+    }
+    void move_cursor_up() {
+        if (terminal_row > 0) {
+            terminal_row--;
+            update_cursor(terminal_column, terminal_row);
+        }
+    }
+
+    void move_cursor_down() {
+        if (terminal_row < VGA_HEIGHT - 1) {
+            terminal_row++;
+            update_cursor(terminal_column, terminal_row);
+        }
+    }
+
+    void move_cursor_left() {
+        if (terminal_column > 0) {
+            terminal_column--;
+        } else if (terminal_row > 0) {
+            terminal_row--;
+            terminal_column = VGA_WIDTH - 1;
+        }
+        update_cursor(terminal_column, terminal_row);
+    }
+
+    void move_cursor_right() {
+        if (terminal_column < VGA_WIDTH - 1) {
+            terminal_column++;
+        } else if (terminal_row < VGA_HEIGHT - 1) {
+            terminal_column = 0;
+            terminal_row++;
+        }
+        update_cursor(terminal_column, terminal_row);
     }
 }
