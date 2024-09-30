@@ -26,11 +26,11 @@ build: $(OBJS) $(USERSPACE_OBJS)
 # Pattern rules to build .o files from .s, .asm, and .cpp files for src/
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.s
 	mkdir -p $(dir $@)  # Create the target directory
-	$(AS) -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.asm
 	mkdir -p $(dir $@)  # Create the target directory
-	$(AS) -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $(dir $@)  # Create the target directory
@@ -39,11 +39,11 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 # Pattern rules to build .o files from .s, .asm, and .cpp files for userspace/
 $(OBJ_DIR)/userspace/%.o: $(USERSPACE_DIR)/%.s
 	mkdir -p $(dir $@)  # Create the target directory
-	$(AS) -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
 
 $(OBJ_DIR)/userspace/%.o: $(USERSPACE_DIR)/%.asm
 	mkdir -p $(dir $@)  # Create the target directory
-	$(AS) -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
 
 $(OBJ_DIR)/userspace/%.o: $(USERSPACE_DIR)/%.cpp
 	mkdir -p $(dir $@)  # Create the target directory
