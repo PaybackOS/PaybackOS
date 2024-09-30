@@ -18,8 +18,8 @@ __attribute__((aligned(0x10)))
 static idt_entry_t idt[IDT_MAX_DESCRIPTORS];  // Array of IDT entries, aligned for performance
 
 typedef struct {
-    uint16_t limit;  // Size of the IDT (number of bytes)
-    uint32_t base;   // Base address of the IDT
+    uint16_t  limit;  // Size of the IDT (number of bytes)
+    uintptr_t base;   // Base address of the IDT
 } __attribute__((packed)) idtr_t;
 
 static idtr_t idtr;  // IDT register structure
@@ -37,7 +37,7 @@ void idt_set_descriptor(uint8_t vector, uintptr_t isr, uint8_t flags) {
 extern void* isr_stub_table[];  // External ISR stubs
 
 void idt_init(void) {
-    idtr.base = (uint32_t)&idt;
+    idtr.base = (uintptr_t)idt;
     idtr.limit = (sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS) - 1;
 
     // Set up the default stub handlers for all 256 interrupts
