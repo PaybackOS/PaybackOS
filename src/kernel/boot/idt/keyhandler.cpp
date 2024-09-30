@@ -96,7 +96,7 @@ void key_translate(uint8_t scancode) {
         }
         return;
     } else {
-        return;
+//        return;
     }
 
     // Get the correct character based on the shift state
@@ -106,7 +106,7 @@ void key_translate(uint8_t scancode) {
     } else {
         key = scancode_table[scancode];
     }
-    
+
     last_key = key;
     vga::putchar(key);
 }

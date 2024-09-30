@@ -14,7 +14,7 @@ struct GDTEntry {
 // Structure for the GDT pointer (used by the lgdt instruction)
 struct GDTPointer {
     uint16_t limit;        // Size of the GDT minus 1
-    uint32_t base;         // Base address of the GDT
+    uintptr_t base;        // Base address of the GDT
 } __attribute__((packed));
 
 // Structure for the Task State Segment (TSS)
@@ -110,14 +110,14 @@ void init_gdt() {
     set_gdt_entry(4, 0, 0xFFFFF, 0xF2, 0xC0);
 
     // Task State Segment (0x0028)
-    set_gdt_entry(5, (uint32_t)&tss, sizeof(tss) - 1, 0x89, 0x00);
+    set_gdt_entry(5, (uintptr_t)&tss, sizeof(tss) - 1, 0x89, 0x00);
 
     // Update the GDT pointer
     gdtp.limit = (sizeof(gdt) - 1);
-    gdtp.base  = (uint32_t)&gdt;
+    gdtp.base  = (uintptr_t)&gdt;
 
     // Flush the new GDT
-    gdt_flush((uint32_t)&gdtp);
+    gdt_flush((uintptr_t)&gdtp);
 
     // Initialize the TSS
     tss.ss0  = 0x10;    // Kernel data segment selector
@@ -129,6 +129,6 @@ void init_gdt() {
 }
 
 // Function to set the kernel stack in TSS (uses the stack already provided by the bootloader)
-void set_kernel_stack(uint32_t stack) {
+void set_kernel_stack(uintptr_t stack) {
     tss.esp0 = stack;  // Set esp0 to the top of your bootloader-provided stack
 }
