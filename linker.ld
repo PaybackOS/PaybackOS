@@ -25,18 +25,23 @@ SECTIONS
 	.text BLOCK(4K) : ALIGN(4K)
 	{
 		*(.multiboot)
-		*(.text)
+		*(.text*)
 	}
 
 	/* Read-only data. */
 	.rodata BLOCK(4K) : ALIGN(4K)
 	{
-		*(.rodata)
+		*(.rodata*)
 	}
 
 	/* Read-write data (initialized) */
 	.data BLOCK(4K) : ALIGN(4K)
 	{
+		/* Global contructor function table */
+		start_ctors = .;
+		KEEP(*(SORT(.ctors)))
+		end_ctors = .;
+
 		*(.data)
 	}
 
@@ -45,6 +50,11 @@ SECTIONS
 	{
 		*(COMMON)
 		*(.bss)
+	}
+
+	/DISCARD/ :
+	{
+		*(.comment)
 	}
 
 	/* The compiler may produce other sections, by default it will put them in

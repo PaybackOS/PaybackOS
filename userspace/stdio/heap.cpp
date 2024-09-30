@@ -1,4 +1,5 @@
 #include <stddef.h>  // for size_t
+#include <stdint.h>  // For uint8_t etc.
 
 // Memory block structure to manage allocation metadata
 struct Block {
@@ -28,7 +29,7 @@ void* sbrk(int increment) {
     }
 
     void* prev_heap = heap;
-    heap += increment;         // Move heap forward by 'increment'
+    heap = (uint8_t *)heap + increment;  // Move heap forward by 'increment'
     allocated_size += increment;  // Increase allocated size by 'increment'
 
     return prev_heap;  // Return previous heap location (like real sbrk)
@@ -41,7 +42,7 @@ void* initialize_heap() {
         return NULL;  // Failed to allocate heap
     }
 
-    heap_end = heap_start + HEAP_SIZE;  // Set the heap end
+    heap_end = (uint8_t *)heap_start + HEAP_SIZE;  // Set the heap end
 
     // Create the initial free block, which spans the entire heap
     free_list = (struct Block*)heap_start;
@@ -66,6 +67,7 @@ struct Block* find_free_block(size_t size) {
 
 // Expands the heap when no suitable block is found (in this case, a placeholder)
 struct Block* expand_heap(size_t size) {
+    (void)size;
     // In a real OS, you'd use sbrk or another system call to request more memory.
     // Here we simulate failure, as heap expansion is limited by HEAP_SIZE.
     return NULL;

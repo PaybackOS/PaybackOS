@@ -2,16 +2,33 @@
 #include <tty.hpp>
 #include <string.h>
 
+// When needed use a proper multiboot info structure
+struct mb_info_t;
+
 void init_gdt();
 void idt_init(void);
 void PIC_init();
 void set_kernel_stack(uint32_t);
 
+uint8_t esp0_stack[4096] __attribute__((aligned(4096)));
 extern "C" void switch_to_user_mode();
 
-uint8_t esp0_stack[4096] __attribute__((aligned(4096)));
+typedef void (*constructor)();
+extern "C" constructor start_ctors[];
+extern "C" constructor end_ctors[];
 
-extern "C" void _init() {
+// Function to iterate through all global constructors and
+// call them. This must be done befor calling _init
+extern "C" void call_constructors()
+{
+    for(constructor* ctor = start_ctors; ctor != end_ctors; ctor++)
+        (*ctor)();
+}
+
+extern "C" void _init(const mb_info_t* mb_info, uint32_t mb_magic) {
+    (void)mb_info;
+    (void)mb_magic;
+
     // Init the VGA interface
     terminal_initialize();
     klog(1, "VGA interface started");

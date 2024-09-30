@@ -1,3 +1,5 @@
+.extern call_constructors
+
 /* Declare constants for the multiboot header. */
 .set ALIGN,    1<<0             /* align loaded modules on page boundaries */
 .set MEMINFO,  1<<1             /* provide memory map */
@@ -31,10 +33,12 @@ stack_top:
 .global _start
 .type _start, @function
 _start:
-	// Disable interrupts until IDT is initialized
-	cli
+        push %eax  // Push multiboot magic number
+        push %ebx  // Push multiboot info pointer
+
 	// Move our stack to esp (where the stack is used)
 	mov $stack_top, %esp
+        call call_constructors
 
 	// Call our kernel
 	call _init
