@@ -16,7 +16,7 @@ static void* heap_start = NULL;         // Starting point of the heap
 static void* heap_end = NULL;           // End of the heap memory
 
 // Simulated heap memory (statically allocated)
-static char heap_memory[HEAP_SIZE];
+static uint8_t heap_memory[HEAP_SIZE];
 
 // Simulate sbrk function to provide heap space
 void* sbrk(int increment) {
