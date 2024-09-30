@@ -8,7 +8,7 @@ struct mb_info_t;
 void init_gdt();
 void idt_init(void);
 void PIC_init();
-void set_kernel_stack(uint32_t);
+void set_kernel_stack(uintptr_t);
 
 uint8_t esp0_stack[4096] __attribute__((aligned(4096)));
 extern "C" void switch_to_user_mode();
@@ -38,7 +38,7 @@ extern "C" void _init(const mb_info_t* mb_info, uint32_t mb_magic) {
     // This stack is by default set to 0 which is not
     // a usable memory location when it wraps to top of
     // memory.
-    set_kernel_stack((uint32_t)esp0_stack + sizeof(esp0_stack));
+    set_kernel_stack((uintptr_t)(esp0_stack + sizeof(esp0_stack)));
     klog(1, "GDT loaded");
     // Init the PIC before idt_init!
     PIC_init();
