@@ -97,7 +97,7 @@ void key_translate(uint8_t scancode) {
         }
         return;
     } else {
-        // Do nothing if not a movement key
+//        return;
     }
 
     // Get the correct character based on the shift state
