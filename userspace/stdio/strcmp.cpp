@@ -4,5 +4,5 @@ int strcmp(const char* str1, const char* str2) {
         str1++;
         str2++;
     }
-    return *str1 == *str2; // Return 1 if equal, 0 if not
+    return (unsigned char)(*str1) - (unsigned char)(*str2); // Return difference
 }

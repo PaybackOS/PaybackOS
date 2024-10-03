@@ -7,6 +7,7 @@
 volatile char last_key = '\0';
 volatile bool shift_pressed = false; // Track shift key state
 volatile bool movekey = false; // Track move key state
+volatile bool key_available = false; // Indicates if a key has been pressed
 
 // Scancode translation table (lowercase letters, numbers, and basic keys)
 static char scancode_table[128] = {
@@ -96,7 +97,7 @@ void key_translate(uint8_t scancode) {
         }
         return;
     } else {
-//        return;
+        // Do nothing if not a movement key
     }
 
     // Get the correct character based on the shift state
@@ -108,5 +109,14 @@ void key_translate(uint8_t scancode) {
     }
 
     last_key = key;
+    key_available = true; // Indicate a key has been pressed
     vga::putchar(key);
+}
+
+// Function to get a character from the keyboard
+char getch() {
+    while (!key_available); // Wait for a key press
+
+    key_available = false; // Reset key availability
+    return last_key; // Return the last pressed key
 }

@@ -7,6 +7,7 @@
 
 void register_isr_handler(uint8_t num, isr_t handler);
 void syscall_handler(stack_frame_t *frame);
+char getch();
 
 isr_t isr_dispatch_table[256] = { nullptr };
 
@@ -44,6 +45,34 @@ const char *exception_descriptions[] = {
     "Security Exception",
     "Reserved"
 };
+
+char getstr(char *buffer, size_t max_size) {
+    size_t i = 0;
+    char ch;
+
+    while (i < max_size - 1) { // Leave space for null terminator
+        ch = getch(); // Get a character from keyboard
+
+        if (ch == '\n') { // Stop on newline
+            break; // Exit loop on newline
+        }
+
+        if (ch == '\b') { // Handle backspace
+            if (i > 0) {
+                i--; // Move back in buffer
+                vga::putchar('\b'); // Move cursor back
+                vga::putchar(' '); // Erase the character
+                vga::putchar('\b'); // Move cursor back again
+            }
+        } else {
+            buffer[i++] = ch; // Add character to buffer
+            vga::putchar(ch); // Echo the character to the screen
+        }
+    }
+
+    buffer[i] = '\0'; // Null-terminate the string
+    return i; // Return the number of characters read
+}
 
 void register_isr_handler(uint8_t num, isr_t handler)
 {
