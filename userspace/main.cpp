@@ -1,15 +1,12 @@
 #include <stdio.hpp>
 #include <string.hpp>
 #include <stdlib.hpp>
-#include <vfs.h>
 
 #define debug 1
 
 extern "C" void userspace_c(void) {
     print("This is being printed from the userspace!\n");
     klog(1, "test log from userspace");
-    // Test our userspace VFS
-    readfile("Test.txt");
     if (debug) {
         // Test our userspace heap
         print("Testing our userspace heap...\n");
