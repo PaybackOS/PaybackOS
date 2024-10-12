@@ -1,20 +1,18 @@
 #include <stdio.hpp>
-#include <string.hpp>
-#include <stdlib.hpp>
+#include <string.h>
 
 #define debug 1
 
 extern "C" void userspace_c(void) {
     print("This is being printed from the userspace!\n");
-    klog(1, "test log from userspace");
     if (debug) {
-        // Test our userspace heap
-        print("Testing our userspace heap...\n");
-        void* heap_str = malloc(19);
-        strcpy((char*)heap_str, "hi from the heap!\n");
-        print((char*)heap_str);
-        free(heap_str);
+        klog(1, "test log from userspace");
+        void* stringtest = new char[5];
+        strcpy((char*)stringtest, "hi!\n");
+        print((char*)stringtest);
+        delete(stringtest);
     }
+
     while(1) {
     }
 }

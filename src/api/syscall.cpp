@@ -11,12 +11,16 @@ typedef struct
 } __attribute__((packed)) stack_frame_t;
 
 // Define syscalls
+#define SYSCALL_HALT 0
 #define SYSCALL_PRINT 1
 #define SYSCALL_PUTCHAR 2
 #define SYSCALL_LOG 3
 
 void syscall_handler(stack_frame_t *frame) {
-    if (frame->eax == SYSCALL_PRINT) {
+    if (frame->eax == SYSCALL_HALT) {
+        klog(3, "Please reboot PC, Major error occured.\n");
+        asm("cli; hlt");
+    } else if (frame->eax == SYSCALL_PRINT) {
         kprintf("%s", (char*)frame->ebx); // Assuming ebx points to a string
         return;
     } else if (frame->eax == SYSCALL_PUTCHAR) {
