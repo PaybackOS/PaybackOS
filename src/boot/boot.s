@@ -41,6 +41,7 @@ _start:
         call call_constructors
 
 	// Call our kernel
+	push %esp
 	call _init
 
 	// If our kernel returns, shutdown everything

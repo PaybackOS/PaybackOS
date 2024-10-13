@@ -4,11 +4,10 @@
 #define debug 1
 
 extern "C" void userspace_c(void) {
-    print("This is being printed from the userspace!\n");
     if (debug) {
         klog(1, "test log from userspace");
-        void* stringtest = new char[5];
-        strcpy((char*)stringtest, "hi!\n");
+        void* stringtest = new char[43];
+        strcpy((char*)stringtest, "This is being printed from the userspace!\n");
         print((char*)stringtest);
         delete(stringtest);
     }

@@ -11,4 +11,6 @@ extern "C" {
     void* readisk(uint32_t lba, uint16_t sectors);
 }
 
+void printf(const char* format, ...);
+
 #endif
