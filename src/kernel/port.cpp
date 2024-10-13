@@ -16,6 +16,21 @@ uint8_t inb(uint16_t port) {
                    : "memory");
     return ret;
 }
+
+uint16_t inw(uint16_t port) {
+    uint16_t result;
+    __asm__ volatile ("inw %[port], %[result]"
+                      : [result] "=a" (result)
+                      : [port] "Nd" (port));
+    return result;
+}
+
+void outw(uint16_t port, uint16_t value) {
+    __asm__ volatile ("outw %[value], %[port]"
+                      :
+                      : [value] "a" (value), [port] "Nd" (port));
+}
+
 void io_wait(void) {
     outb(0x80, 0);
 }

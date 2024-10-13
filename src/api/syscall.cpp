@@ -1,6 +1,10 @@
 #include <stdint.h>
 #include <tty.hpp>
 #include <stdio.hpp>
+
+// Define our function prototypes
+void ide_read(uint32_t lba, uint16_t sectors, void *buffer);
+
 // Define our registers that we can use in our syscall handler
 typedef struct
 {
@@ -11,11 +15,13 @@ typedef struct
 } __attribute__((packed)) stack_frame_t;
 
 // Define syscalls
-#define SYSCALL_HALT 0
-#define SYSCALL_PRINT 1
-#define SYSCALL_PUTCHAR 2
-#define SYSCALL_LOG 3
+#define SYSCALL_HALT 0 // Halt the CPU
+#define SYSCALL_PRINT 1 // Print a string to the string
+#define SYSCALL_PUTCHAR 2 // Print a char to the screen
+#define SYSCALL_LOG 3 // Log with levels
+#define SYSCALL_READ 4 // Read from disk
 
+// Our system call function, this is called by int $80
 void syscall_handler(stack_frame_t *frame) {
     if (frame->eax == SYSCALL_HALT) {
         klog(3, "Please reboot PC, Major error occured.\n");
@@ -28,6 +34,11 @@ void syscall_handler(stack_frame_t *frame) {
         return;
     } else if (frame->eax == SYSCALL_LOG) {
         klog(frame->ebx, (const char*)frame->ecx); // Logging
+        return;
+    } else if (frame->eax == SYSCALL_READ) {
+        void* buffer[512]; // Setup our buffer for the disk
+        ide_read(frame->ebx, frame->ecx, buffer); // Read from the disk and put it into here
+        frame->eax = (unsigned int)buffer; // Put data into the return register
         return;
     }
     return; // If no valid syscall number, do nothing
