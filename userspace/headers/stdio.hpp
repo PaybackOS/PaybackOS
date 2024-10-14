@@ -9,8 +9,7 @@ extern "C" {
     void putchar(char c);
     void klog(int level, const char* msg);
     void* readisk(uint32_t lba, uint16_t sectors);
+    void printf(const char* format, ...);
 }
-
-void printf(const char* format, ...);
 
 #endif

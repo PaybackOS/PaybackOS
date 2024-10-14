@@ -1,5 +1,8 @@
-#include <stdio.hpp>
 #include <stdarg.h>
+
+void print(const char* str);
+void putchar(char c);
+void klog(int level, const char* msg);
 
 void print_integer(int num) {
     if (num < 0) {

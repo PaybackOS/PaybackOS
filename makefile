@@ -67,7 +67,7 @@ iso: build
 
 # Run the OS
 run:
-	qemu-system-i386 -hda PaybackOS.iso -d int -no-shutdown -no-reboot
+	qemu-system-i386 -hda PaybackOS.iso -d int
 
 # Clean rule to remove generated files
 clean:
