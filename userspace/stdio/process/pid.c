@@ -1,81 +1,52 @@
-#include <stddef.h>
-#include <stdlib.h>
+// Function prototypes
+void klog(int level, const char* msg);
 
-struct Process {
+#define MAX_PROCESSES 256
+
+struct pid {
     int pid;
-    struct Process* next;
+    int in_use;
 };
 
-struct Process* process_list = NULL;
-int next_pid = 1;  // Start PIDs from 1
+struct pid programs[MAX_PROCESSES];
 
-void print(const char* str);
-void putchar(char c);
-void klog(int level, const char* msg);
-void printf(const char* format, ...);
-
-// Function to create a new process
-int create_process() {
-    struct Process* new_process = (struct Process*)malloc(sizeof(struct Process));
-    if (!new_process) {
-        klog(1, "Failed to allocate memory for new process");
-        return -1;  // Indicate failure
+// Initialize the PID management system
+void init_pid_manager() {
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        programs[i].pid = -1;  // Set all PIDs to an invalid state
+        programs[i].in_use = 0; // Mark as not in use
     }
-    
-    new_process->pid = next_pid++;
-    new_process->next = process_list;
-    process_list = new_process;
-
-    printf("Process created with PID: %d\n", new_process->pid);
-    return new_process->pid;  // Return the new PID
 }
 
-// Function to destroy a process by PID
-int destroy_process(int pid) {
-    struct Process* current = process_list;
-    struct Process* previous = NULL;
+// Create a new PID
+int create_pid(int requested_pid) {
+    if (requested_pid < 0 || requested_pid >= MAX_PROCESSES) {
+        klog(3, "Invalid PID requested");
+        return -1;
+    }
 
-    while (current != NULL) {
-        if (current->pid == pid) {
-            if (previous == NULL) {
-                // We're at the head of the list
-                process_list = current->next;
-            } else {
-                // Bypass the current process
-                previous->next = current->next;
-            }
-            free(current);
-            printf("Process with PID %d destroyed\n", pid);
-            return 0;  // Success
+    // Check for an available PID instead of checking if the requested one is in use
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (!programs[i].in_use) {
+            programs[i].pid = requested_pid;
+            programs[i].in_use = 1; // Mark as in use
+            return requested_pid;
         }
-        previous = current;
-        current = current->next;
     }
-    
-    klog(2, "Process not found");
-    return -1;  // Process not found
+
+    klog(3, "No available PIDs to create");
+    return -1;
 }
 
-// Function to list all processes
-void list_processes() {
-    struct Process* current = process_list;
-    if (current == NULL) {
-        printf("No processes running\n");
-        return;
+// Delete a PID
+void delete_pid(int pid) {
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (programs[i].in_use && programs[i].pid == pid) {
+            programs[i].in_use = 0; // Mark as not in use
+            programs[i].pid = -1;   // Reset the PID to an invalid state
+            return;
+        }
     }
 
-    printf("Currently running processes:\n");
-    while (current != NULL) {
-        printf("PID: %d\n", current->pid);
-        current = current->next;
-    }
-}
-
-// Example usage
-void testpid() {
-    int pid1 = create_process();
-    int pid2 = create_process();
-    list_processes();
-    destroy_process(pid1);
-    list_processes();
+    klog(3, "Attempted to delete non-existent or invalid PID");
 }
