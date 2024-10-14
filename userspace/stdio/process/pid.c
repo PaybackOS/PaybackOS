@@ -1,111 +1,81 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-void print(const char* str);
-void putchar(char c);
-void klog(int level, const char* msg);
-void printf(const char* format, ...);
-
 struct Process {
     int pid;
     struct Process* next;
 };
 
-struct Process* head = NULL;
+struct Process* process_list = NULL;
+int next_pid = 1;  // Start PIDs from 1
 
-int createProcess(int pid) {
-    struct Process* newProcess = (struct Process*)malloc(sizeof(struct Process));
-    if (newProcess == NULL) {
-        return -1; // Allocation failed
+void print(const char* str);
+void putchar(char c);
+void klog(int level, const char* msg);
+void printf(const char* format, ...);
+
+// Function to create a new process
+int create_process() {
+    struct Process* new_process = (struct Process*)malloc(sizeof(struct Process));
+    if (!new_process) {
+        klog(1, "Failed to allocate memory for new process");
+        return -1;  // Indicate failure
     }
+    
+    new_process->pid = next_pid++;
+    new_process->next = process_list;
+    process_list = new_process;
 
-    // Check if the PID is already in use
-    struct Process* temp = head;
-    while (temp != NULL) {
-        if (temp->pid == pid) {
-            return -2; // PID already in use
-        }
-        temp = temp->next;
-    }
-
-    // Ensure PID is a positive integer
-    if (pid <= 0) {
-        return -3; // Invalid PID
-    }
-
-    newProcess->pid = pid;
-    newProcess->next = NULL; // Always set the next pointer to NULL for new processes
-
-    if (head == NULL) {
-        head = newProcess;
-    } else {
-        temp = head;
-        while (temp->next != NULL) {
-            temp = temp->next;
-        }
-        temp->next = newProcess;
-    }
-
-    return 0; // Success
+    printf("Process created with PID: %d\n", new_process->pid);
+    return new_process->pid;  // Return the new PID
 }
 
-void terminateProcess(int pid) {
-    struct Process* current = head;
+// Function to destroy a process by PID
+int destroy_process(int pid) {
+    struct Process* current = process_list;
     struct Process* previous = NULL;
 
-    while (current != NULL && current->pid != pid) {
+    while (current != NULL) {
+        if (current->pid == pid) {
+            if (previous == NULL) {
+                // We're at the head of the list
+                process_list = current->next;
+            } else {
+                // Bypass the current process
+                previous->next = current->next;
+            }
+            free(current);
+            printf("Process with PID %d destroyed\n", pid);
+            return 0;  // Success
+        }
         previous = current;
         current = current->next;
     }
+    
+    klog(2, "Process not found");
+    return -1;  // Process not found
+}
 
+// Function to list all processes
+void list_processes() {
+    struct Process* current = process_list;
     if (current == NULL) {
-        // Process not found
+        printf("No processes running\n");
         return;
     }
 
-    // Remove the process from the linked list
-    if (previous == NULL) {
-        // Process is the head
-        head = current->next;
-    } else {
-        previous->next = current->next;
-    }
-
-    // Free the memory allocated for the process
-    free(current);
-}
-
-void printProcessList() {
-    print("\nProcess List:\n");
-    struct Process* temp = head;
-    while (temp != NULL) {
-        // Use printf with %d format specifier
-        printf("PID: %d\n", temp->pid);
-
-        temp = temp->next;
+    printf("Currently running processes:\n");
+    while (current != NULL) {
+        printf("PID: %d\n", current->pid);
+        current = current->next;
     }
 }
 
-int testpid() {
-    // Create a few processes
-    int pid1 = createProcess(1);
-    int pid2 = createProcess(2);
-    int pid3 = createProcess(3);
-
-    if (pid1 == -1 || pid2 == -1 || pid3 == -1) {
-        print("PID process creation failed.");
-    }
-
-    // Print the process list
-    printProcessList();
-
-    // Kill all the processes we just created
-    terminateProcess(pid1);
-    terminateProcess(pid2);
-    terminateProcess(pid3);
-
-    // List the remaining processes
-    printProcessList();
-
-    return 0;
+// Example usage
+void testpid() {
+    int pid1 = create_process();
+    int pid2 = create_process();
+    list_processes();
+    destroy_process(pid1);
+    list_processes();
 }
