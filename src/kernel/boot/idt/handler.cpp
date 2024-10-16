@@ -145,16 +145,35 @@ void init_isr_handlers()
     register_isr_handler(80, syscall_handler);
 }
 
+extern "C" void print_stack_trace() {
+    void **stack_ptr;
+    asm volatile("mov %%esp, %0" : "=r"(stack_ptr));  // Get current stack pointer
+
+    kprintf("Stack trace:\n");
+    serial::printf("Stack trace:\n");
+    for (int i = 0; stack_ptr && i < 10; ++i) {  // Limit to 10 frames
+        kprintf("%x\n", (uintptr_t)*stack_ptr); // Print address as hex using %x
+        serial::printf("%x\n", (uintptr_t)*stack_ptr); // Print address as hex using %x
+        stack_ptr++;
+    }
+}
+
 extern "C" void C_handler(stack_frame_t *frame) {    
     if (frame->int_num >= 256) {
         klog(3, "Invalid interrupt number");
         return;
     }
-    
+
+    // Check if the current interrupt is a General Protection Fault (13)
+    if (frame->int_num == 13) {
+        print_stack_trace(); // Call the stack trace function
+    }
+
     if (isr_dispatch_table[frame->int_num] == nullptr) {
         klog(3, "No handler registered");
         return;
     }
+
     isr_dispatch_table[frame->int_num](frame);
     return;
 }

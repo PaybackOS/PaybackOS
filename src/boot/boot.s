@@ -42,6 +42,7 @@ _start:
 
 	// Call our kernel
 	push %esp
+	xor %ebp, %ebp    // Set %ebp to NULL for stack trace
 	call _init
 
 	// If our kernel returns, shutdown everything
