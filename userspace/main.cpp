@@ -1,11 +1,11 @@
 #include <stdio.hpp>
 #include <string.h>
+#include <pid.hpp>
 
 struct debug {
     int debug; // General debugging, testing memory managment and so on
     int fulldebug; // Extension of debug, used to test stuff like a GPF.
 };
-extern "C" void init_pid_manager();
 
 extern "C" void userspace_c(void) {
     init_pid_manager(); // Start the PID managment system
