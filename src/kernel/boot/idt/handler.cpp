@@ -158,15 +158,18 @@ extern "C" void print_stack_trace() {
     }
 }
 
-extern "C" void C_handler(stack_frame_t *frame) {    
+bool is_exception(int int_num) {
+    return int_num >= 0 && int_num < 32; // Checks if it's any exception (0-31)
+}
+
+extern "C" void C_handler(stack_frame_t *frame) {
     if (frame->int_num >= 256) {
         klog(3, "Invalid interrupt number");
         return;
     }
 
-    // Check if the current interrupt is a General Protection Fault (13)
-    if (frame->int_num == 13) {
-        print_stack_trace(); // Call the stack trace function
+    if (is_exception(frame->int_num)) {
+        print_stack_trace(); // Print the stack trace
     }
 
     if (isr_dispatch_table[frame->int_num] == nullptr) {
@@ -175,5 +178,4 @@ extern "C" void C_handler(stack_frame_t *frame) {
     }
 
     isr_dispatch_table[frame->int_num](frame);
-    return;
 }

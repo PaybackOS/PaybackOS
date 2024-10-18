@@ -3,3 +3,4 @@
 *.bin
 *.iso
 .vscode
+*.log
