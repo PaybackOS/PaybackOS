@@ -2,9 +2,6 @@
 #include <tty.hpp>
 #include <stdio.hpp>
 
-// Define our function prototypes
-void ide_read(uint32_t lba, uint16_t sectors, void *buffer);
-
 // Define our registers that we can use in our syscall handler
 typedef struct
 {
@@ -34,11 +31,6 @@ void syscall_handler(stack_frame_t *frame) {
         return;
     } else if (frame->eax == SYSCALL_LOG) {
         klog(frame->ebx, (const char*)frame->ecx); // Logging
-        return;
-    } else if (frame->eax == SYSCALL_READ) {
-        void* buffer[512]; // Setup our buffer for the disk
-        ide_read(frame->ebx, frame->ecx, buffer); // Read from the disk and put it into here
-        frame->eax = (unsigned int)buffer; // Put data into the return register
         return;
     }
     return; // If no valid syscall number, do nothing
