@@ -31,6 +31,7 @@ extern "C" void _init(const mb_info_t* mb_info, uint32_t mb_magic) {
 
     // Init the VGA interface
     terminal_initialize();
+    serial::init_serial();
     klog(1, "VGA interface started");
     // Init the GDT
     init_gdt();
@@ -46,6 +47,6 @@ extern "C" void _init(const mb_info_t* mb_info, uint32_t mb_magic) {
     // Init the IDT
     idt_init();
     klog(1, "IDT loaded");
-    //Move to our userspace
+    // Move to our userspace
     switch_to_user_mode();
 }
