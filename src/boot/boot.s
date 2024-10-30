@@ -1,4 +1,5 @@
 .extern call_constructors
+.extern init_gdt
 
 /* Declare constants for the multiboot header. */
 .set ALIGN,    1<<0             /* align loaded modules on page boundaries */
@@ -39,6 +40,8 @@ _start:
 	// Move our stack to esp (where the stack is used)
 	mov $stack_top, %esp
         call call_constructors
+	// Init the GDT
+	call init_gdt
 
 	// Call our kernel
 	push %esp

@@ -2,6 +2,9 @@
 #include <tty.hpp>
 #include <stdio.hpp>
 
+// Function prototypes
+char getch();
+
 // Define our registers that we can use in our syscall handler
 typedef struct
 {
@@ -16,7 +19,7 @@ typedef struct
 #define SYSCALL_PRINT 1 // Print a string to the string
 #define SYSCALL_PUTCHAR 2 // Print a char to the screen
 #define SYSCALL_LOG 3 // Log with levels
-#define SYSCALL_READ 4 // Read from disk
+#define SYSCALL_GETCH 4 // Read from 
 
 // Our system call function, this is called by int $80
 void syscall_handler(stack_frame_t *frame) {
@@ -31,6 +34,9 @@ void syscall_handler(stack_frame_t *frame) {
         return;
     } else if (frame->eax == SYSCALL_LOG) {
         klog(frame->ebx, (const char*)frame->ecx); // Logging
+        return;
+    } else if (frame->eax == SYSCALL_GETCH) {
+        frame->eax = getch();
         return;
     }
     return; // If no valid syscall number, do nothing

@@ -67,7 +67,7 @@ iso: build
 
 # Run the OS
 run:
-	qemu-system-i386 -hda PaybackOS.iso -d int -serial file:seriallog.log
+	qemu-system-i386 -hda PaybackOS.iso
 
 # Clean rule to remove generated files
 clean:

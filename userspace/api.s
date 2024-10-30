@@ -1,6 +1,8 @@
 .global print
 .global putchar
 .global klog
+.global getch
+.global halt
 .type print, @function
 
 print:
@@ -19,5 +21,15 @@ klog:
     movl $3, %eax # Log with levels
     movl 4(%esp), %ebx # Log level
     movl 8(%esp), %ecx # Log
+    int $80
+    ret
+
+getch:
+    movl $4, %eax # Getch
+    int $80
+    ret
+
+halt:
+    movl $0, %eax # Halt
     int $80
     ret

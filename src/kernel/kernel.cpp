@@ -31,17 +31,11 @@ extern "C" void _init(const mb_info_t* mb_info, uint32_t mb_magic) {
 
     // Init the VGA interface
     terminal_initialize();
-    serial::init_serial();
     klog(1, "VGA interface started");
-    // Init the GDT
-    init_gdt();
     // Set kernel stack for transitions from usermode
-    // This stack is by default set to 0 which is not
-    // a usable memory location when it wraps to top of
-    // memory.
+    // This stack is by default set to 0 which is not a usable memory location when it wraps to top of memory.
     set_kernel_stack((uintptr_t)(esp0_stack + sizeof(esp0_stack)));
-    klog(1, "GDT loaded");
-    // Init the PIC before idt_init!
+    // This will start the PIC (programmable interrupt chip)
     PIC_init();
     klog(1, "PIC started");
     // Init the IDT

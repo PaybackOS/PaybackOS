@@ -7,7 +7,6 @@
 
 void register_isr_handler(uint8_t num, isr_t handler);
 void syscall_handler(stack_frame_t *frame);
-char getch();
 
 isr_t isr_dispatch_table[256] = { nullptr };
 
@@ -45,34 +44,6 @@ const char *exception_descriptions[] = {
     "Security Exception",
     "Reserved"
 };
-
-char getstr(char *buffer, size_t max_size) {
-    size_t i = 0;
-    char ch;
-
-    while (i < max_size - 1) { // Leave space for null terminator
-        ch = getch(); // Get a character from keyboard
-
-        if (ch == '\n') { // Stop on newline
-            break; // Exit loop on newline
-        }
-
-        if (ch == '\b') { // Handle backspace
-            if (i > 0) {
-                i--; // Move back in buffer
-                vga::putchar('\b'); // Move cursor back
-                vga::putchar(' '); // Erase the character
-                vga::putchar('\b'); // Move cursor back again
-            }
-        } else {
-            buffer[i++] = ch; // Add character to buffer
-            vga::putchar(ch); // Echo the character to the screen
-        }
-    }
-
-    buffer[i] = '\0'; // Null-terminate the string
-    return i; // Return the number of characters read
-}
 
 void register_isr_handler(uint8_t num, isr_t handler)
 {
@@ -124,23 +95,19 @@ void keyboard_handler(stack_frame_t *frame) {
     return;
 }
 
-void __attribute__((noreturn)) divbyzero_handler(stack_frame_t *frame)
-{
+void __attribute__((noreturn)) divbyzero_handler(stack_frame_t *frame) {
     (void)frame;
     klog(3, exception_descriptions[frame->int_num]);
 
     while(1) __asm__ __volatile__ ("hlt");
 }
 
-void init_isr_handlers()
-{
+void init_isr_handlers() {
     for (int index = 0; index < 256; index++)
         isr_dispatch_table[index] = default_exception_handler;
 
     for (int index = 32; index < 48; index++)
         isr_dispatch_table[index] = default_irq_handler;
-
-    register_isr_handler(0, divbyzero_handler);
     register_isr_handler(33, keyboard_handler);
     register_isr_handler(80, syscall_handler);
 }
@@ -150,10 +117,8 @@ extern "C" void print_stack_trace() {
     asm volatile("mov %%esp, %0" : "=r"(stack_ptr));  // Get current stack pointer
 
     kprintf("Stack trace:\n");
-    serial::printf("Stack trace:\n");
     for (int i = 0; stack_ptr && i < 10; ++i) {  // Limit to 10 frames
         kprintf("%x\n", (uintptr_t)*stack_ptr); // Print address as hex using %x
-        serial::printf("%x\n", (uintptr_t)*stack_ptr); // Print address as hex using %x
         stack_ptr++;
     }
 }
