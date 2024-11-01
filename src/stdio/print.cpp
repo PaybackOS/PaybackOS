@@ -182,3 +182,17 @@ namespace vga {
         update_cursor(terminal_column, terminal_row);
     }
 }
+
+void clear_terminal() {
+    // Clear the terminal buffer
+    for (size_t y = 0; y < VGA_HEIGHT; y++) {
+        for (size_t x = 0; x < VGA_WIDTH; x++) {
+            const size_t index = y * VGA_WIDTH + x;
+            terminal_buffer[index] = vga_entry(' ', terminal_color);
+        }
+    }
+    // Reset the cursor position
+    terminal_row = 0;
+    terminal_column = 0;
+    update_cursor(terminal_column, terminal_row);
+}

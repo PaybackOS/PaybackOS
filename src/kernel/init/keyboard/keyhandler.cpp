@@ -34,21 +34,29 @@ void append(char s[], char n) {
 }
 
 void key_translate(uint8_t scancode) {
-    if (welcome == false) {
+    if (!welcome) {
         vga::print("Welcome to the debug shell\n> ");
         welcome = true;
     }
     if (scancode > SC_MAX) return;
+
     if (scancode == BACKSPACE) {
-        kprintf("\b");
+        // Remove the last character from the buffer
+        size_t len = strlen(key_buffer);
+        if (len > 0) {
+            key_buffer[len - 1] = '\0'; // Remove last character
+            vga::putchar('\b'); // Move cursor back
+            vga::putchar(' ');   // Overwrite with space
+            vga::putchar('\b');  // Move cursor back again
+        }
     } else if (scancode == ENTER) {
         vga::putchar('\n');
         execute_command(key_buffer);
-        key_buffer[0] = '\0';
+        key_buffer[0] = '\0'; // Clear the buffer
     } else {
         char letter = sc_ascii[(int) scancode];
-        append(key_buffer, letter);
+        append(key_buffer, letter); // Add character to the buffer
         char str[2] = {letter, '\0'};
-        vga::print(str);
+        vga::print(str); // Print the character to the screen
     }
 }
