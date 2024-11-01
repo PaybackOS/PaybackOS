@@ -27,6 +27,7 @@ extern "C" void userspace_c(void) {
         klog(1, "Testing stack tracing, this GPF is designed to happen.\n");
         asm("cli"); // Trigger stack trace from calling a command that is priviledged.
     }
+    print("> ");
     delete_pid(0); // Shut down the userspace since it is no longer active
     while(true) {
         
