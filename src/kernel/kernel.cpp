@@ -25,12 +25,17 @@ extern "C" void call_constructors()
         (*ctor)();
 }
 
+void show_copyright() {
+    kprintf("All code and these works are under public domain and available at https://github.com/PaybackOS/PaybackOS\n");
+}
+
 extern "C" void _init(const mb_info_t* mb_info, uint32_t mb_magic) {
     (void)mb_info;
     (void)mb_magic;
 
     // Init the VGA interface
     terminal_initialize();
+    show_copyright();
     klog(1, "VGA interface started");
     // Set kernel stack for transitions from usermode
     // This stack is by default set to 0 which is not a usable memory location when it wraps to top of memory.

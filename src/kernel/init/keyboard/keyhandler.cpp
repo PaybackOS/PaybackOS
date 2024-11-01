@@ -35,7 +35,7 @@ void append(char s[], char n) {
 
 void key_translate(uint8_t scancode) {
     if (!welcome) {
-        vga::print("Welcome to the debug shell\n> ");
+        kprintf("Welcome to the debug shell\n> ");
         welcome = true;
     }
     if (scancode > SC_MAX) return;

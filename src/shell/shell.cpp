@@ -27,6 +27,7 @@ void execute_command(char *input) {
         // Do a 8042 (PS/2 controller) reboot
         reboot();
     } else if (strcmp(input, "CLEAR") == 0) {
+        // Clear the screen
         clear_terminal();
     } else if (strcmp(input, "") == 0) {
         asm("nop"); // Do nothing
