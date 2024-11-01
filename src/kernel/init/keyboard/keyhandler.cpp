@@ -5,10 +5,13 @@
 #include <tty.hpp>
 #include <string.h>
 
+void execute_command(char *input);
+
 #define BACKSPACE 0x0E
 #define ENTER 0x1C
 
 static char key_buffer[256];
+bool welcome = false;
 
 #define SC_MAX 57
 
@@ -24,21 +27,6 @@ const char sc_ascii[] = {'?', '?', '1', '2', '3', '4', '5', '6',
                          'H', 'J', 'K', 'L', ';', '\'', '`', '?', '\\', 'Z', 'X', 'C', 'V',
                          'B', 'N', 'M', ',', '.', '/', '?', '?', '?', ' '};
 
-void execute_command(char *input) {
-    if (strcmp(input, "EXIT") == 0) {
-        vga::print("Stopping the CPU. Bye!\n");
-        asm volatile("hlt");
-    }
-    else if (strcmp(input, "") == 0) {
-        vga::print("\n> ");
-    }
-    else {
-        vga::print("Unknown command: ");
-        vga::print(input);
-        vga::print("\n> ");
-    }
-}
-
 void append(char s[], char n) {
     int len = strlen(s);
     s[len] = n;
@@ -46,6 +34,10 @@ void append(char s[], char n) {
 }
 
 void key_translate(uint8_t scancode) {
+    if (welcome == false) {
+        vga::print("Welcome to the debug shell\n> ");
+        welcome = true;
+    }
     if (scancode > SC_MAX) return;
     if (scancode == BACKSPACE) {
         kprintf("\b");
