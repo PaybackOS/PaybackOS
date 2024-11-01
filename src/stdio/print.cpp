@@ -70,6 +70,18 @@ void terminal_initialize(void) {
     }
 }
 
+size_t strlen(const char *str) {
+    size_t length = 0;
+
+    // Iterate through the string until the null terminator is found
+    while (*str != '\0') {
+        length++;
+        str++; // Move to the next character
+    }
+
+    return length;
+}
+
 namespace vga {
     void terminal_setcolor(uint8_t color) {
         terminal_color = color;

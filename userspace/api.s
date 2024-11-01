@@ -24,11 +24,6 @@ klog:
     int $80
     ret
 
-getch:
-    movl $4, %eax # Getch
-    int $80
-    ret
-
 halt:
     movl $0, %eax # Halt
     int $80

@@ -2,9 +2,6 @@
 #include <tty.hpp>
 #include <stdio.hpp>
 
-// Function prototypes
-char getch();
-
 // Define our registers that we can use in our syscall handler
 typedef struct
 {
@@ -34,9 +31,6 @@ void syscall_handler(stack_frame_t *frame) {
         return;
     } else if (frame->eax == SYSCALL_LOG) {
         klog(frame->ebx, (const char*)frame->ecx); // Logging
-        return;
-    } else if (frame->eax == SYSCALL_GETCH) {
-        frame->eax = getch();
         return;
     }
     return; // If no valid syscall number, do nothing
