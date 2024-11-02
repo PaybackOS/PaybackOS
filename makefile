@@ -55,7 +55,7 @@ $(OBJ_DIR)/userspace/%.o: $(USERSPACE_DIR)/%.cpp
 
 $(OBJ_DIR)/userspace/%.o: $(USERSPACE_DIR)/%.c
 	mkdir -p $(dir $@)  # Create the target directory
-	$(CC) $(USERCFLAGS) $< -o $@
+	$(CC) $(USERCFLAGS) -c $< -o $@
 
 # Create the GRUB iso
 iso: build
