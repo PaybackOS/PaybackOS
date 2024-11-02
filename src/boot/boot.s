@@ -44,7 +44,7 @@ _start:
 	call init_gdt
 
 	// Call our kernel
-	push %esp
+	push %esp // Our flags and other multiboot info
 	xor %ebp, %ebp    // Set %ebp to NULL for stack trace
 	call _init
 

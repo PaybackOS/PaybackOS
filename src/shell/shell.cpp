@@ -4,6 +4,9 @@
 #include <stdio.hpp>
 #include <port.h>
 
+// Function prototypes
+void term_help();
+
 void halt() {
     klog(1, "SHUTTING DOWN CPU!\n");
     asm("cli; hlt");
@@ -17,7 +20,7 @@ void reboot() {
     halt();
 }
 
-// Debug shell
+// Debug shell (kernel space)
 void execute_command(char *input) {
     if (strcmp(input, "EXIT") == 0) {
         // Clear the screen and halt the CPU
@@ -29,6 +32,8 @@ void execute_command(char *input) {
     } else if (strcmp(input, "CLEAR") == 0) {
         // Clear the screen
         clear_terminal();
+    } else if (strcmp(input, "HELP") == 0) {
+        term_help();
     } else if (strcmp(input, "") == 0) {
         asm("nop"); // Do nothing
     } else {
@@ -36,4 +41,10 @@ void execute_command(char *input) {
     }
     kprintf("> ");
     return;
+}
+
+void term_help() {
+    kprintf("EXIT: shutdown the CPU.\n");
+    kprintf("REBOOT: Tell the 8042 PS/2 chip to reboot the system.\n");
+    kprintf("HELP: List these commands\n");
 }

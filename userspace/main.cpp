@@ -9,7 +9,7 @@ struct debug {
     bool fulldebug; // Extension of debug, used to test stuff like a GPF.
 };
 
-extern "C" void userspace_c(void) {
+extern "C" void userspace_init(void) {
     init_pid_manager(); // Start the PID managment system
     create_pid(0); // Create the userspace PID
     debug debuginfo;

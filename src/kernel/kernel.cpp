@@ -1,9 +1,7 @@
 #include <stdio.hpp>
 #include <tty.hpp>
 #include <string.h>
-
-// When needed use a proper multiboot info structure
-struct mb_info_t;
+#include "multiboot.h"
 
 void init_gdt();
 void idt_init(void);
@@ -29,23 +27,18 @@ void show_copyright() {
     kprintf("All code and these works are under public domain and available at https://github.com/PaybackOS/PaybackOS\n");
 }
 
-extern "C" void _init(const mb_info_t* mb_info, uint32_t mb_magic) {
-    (void)mb_info;
-    (void)mb_magic;
-
-    // Init the VGA interface
+extern "C" void _init(multiboot_info_t* mb_info) {
+    // Initialize kernel components
     terminal_initialize();
     show_copyright();
-    klog(1, "VGA interface started");
-    // Set kernel stack for transitions from usermode
-    // This stack is by default set to 0 which is not a usable memory location when it wraps to top of memory.
     set_kernel_stack((uintptr_t)(esp0_stack + sizeof(esp0_stack)));
-    // This will start the PIC (programmable interrupt chip)
     PIC_init();
     klog(1, "PIC started");
-    // Init the IDT
     idt_init();
     klog(1, "IDT loaded");
-    // Move to our userspace
+
+    // Transition to user mode
+    klog(1, "Transitioning to user mode...");
     switch_to_user_mode();
+    klog(1, "User mode transition completed.");
 }

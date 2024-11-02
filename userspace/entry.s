@@ -1,5 +1,5 @@
 .global switch_to_user_mode
-.extern userspace_c
+.extern userspace_init
 
 switch_to_user_mode:
     mov $0x23, %ax              // Load the data selector (for ring 3) into %ax
@@ -14,5 +14,5 @@ switch_to_user_mode:
     push %eax                   // Push current esp
     pushf                       // Push flags
     push $0x1b                  // Push the code selector (for ring 3)
-    push $userspace_c           // Push instruction address to return to
+    push $userspace_init           // Push instruction address to return to
     iret // Use a interrupt return to trick the CPU into thinking we were already in usermode
