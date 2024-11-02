@@ -34,17 +34,20 @@ stack_top:
 .global _start
 .type _start, @function
 _start:
-        push %eax  // Push multiboot magic number
-        push %ebx  // Push multiboot info pointer
-
-	// Move our stack to esp (where the stack is used)
+	// Set up our stack before pushing data
 	mov $stack_top, %esp
-        call call_constructors
+
+    // These are placed on the stack and will be used as first
+    // 2 parameters to _init.
+	push %eax  // Push multiboot magic number
+	push %ebx  // Push multiboot info pointer
+
+	call call_constructors
+
 	// Init the GDT
 	call init_gdt
 
 	// Call our kernel
-	push %esp // Our flags and other multiboot info
 	xor %ebp, %ebp    // Set %ebp to NULL for stack trace
 	call _init
 
