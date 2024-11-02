@@ -19,7 +19,8 @@ extern "C" constructor end_ctors[];
 // call them. This must be done befor calling _init
 extern "C" void call_constructors()
 {
-    for(constructor* ctor = start_ctors; ctor != end_ctors; ctor++)
+    size_t n = ((uintptr_t)end_ctors - (uintptr_t)start_ctors)/(sizeof(constructor));
+    for (constructor *ctor = start_ctors; ctor < start_ctors + n; ctor++)
         (*ctor)();
 }
 
