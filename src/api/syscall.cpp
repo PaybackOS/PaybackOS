@@ -1,6 +1,9 @@
 #include <stdint.h>
 #include <tty.hpp>
 #include <stdio.hpp>
+#include <stdlib.h>
+
+extern bool isdebug;
 
 // Define our registers that we can use in our syscall handler
 typedef struct
@@ -12,25 +15,44 @@ typedef struct
 } __attribute__((packed)) stack_frame_t;
 
 // Define syscalls
-#define SYSCALL_HALT 0 // Halt the CPU
-#define SYSCALL_PRINT 1 // Print a string to the string
-#define SYSCALL_PUTCHAR 2 // Print a char to the screen
-#define SYSCALL_LOG 3 // Log with levels
-#define SYSCALL_GETCH 4 // Read from 
+#define Halt 0 // Halt the CPU
+#define Print 1 // Print a string to the string
+#define Putchar 2 // Print a char to the screen
+#define Log 3 // Log with levels
+#define Checkdebug 5 // Check if the OS is in debug mode
+#define Malloc 6 // Malloc
+#define Free 7 // Free
+#define Calloc 8 // Calloc
+#define Realloc 9 // Realloc
 
 // Our system call function, this is called by int $80
 void syscall_handler(stack_frame_t *frame) {
-    if (frame->eax == SYSCALL_HALT) {
-        klog(3, "Please reboot PC, Major error occured.\n");
+    if (frame->eax == Halt) {
+        klog(2, "Halting CPU.\n");
         asm("cli; hlt");
-    } else if (frame->eax == SYSCALL_PRINT) {
+    } else if (frame->eax == Print) {
         kprintf("%s", (char*)frame->ebx); // Assuming ebx points to a string
         return;
-    } else if (frame->eax == SYSCALL_PUTCHAR) {
+    } else if (frame->eax == Putchar) {
         vga::putchar(frame->ebx); // Assuming ebx is a character
         return;
-    } else if (frame->eax == SYSCALL_LOG) {
+    } else if (frame->eax == Log) {
         klog(frame->ebx, (const char*)frame->ecx); // Logging
+        return;
+    } else if (frame->eax == Checkdebug) {
+        frame->eax = isdebug;
+        return;
+    } else if (frame->eax == Malloc) {
+        void* ptr = kmalloc(frame->ebx);
+        frame->eax = (uint32_t)ptr; // We onlt make it a uint32_t here since the types are not compatible but that is the return register
+        return;
+    } else if (frame->eax == Free) {
+        kfree((void*)frame->ebx); // Assume ebx is the pointer
+    } else if (frame->eax == Calloc) {
+        /*the EAX register is used as return*/frame->eax = (uint32_t)(frame->ebx, frame->ecx); // Calloc the memory
+        return;
+    } else if (frame->eax == Realloc) {
+        /*the EAX register is used as return*/frame->eax = (uint32_t)krealloc((void*)frame->ebx, frame->ecx); // Resize the pointer
         return;
     }
     return; // If no valid syscall number, do nothing

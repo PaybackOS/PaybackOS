@@ -1,6 +1,5 @@
 #ifndef IDTCOMMON_HPP
-#define IDTCOMMON_HPP 1
-#pragma once
+#define IDTCOMMON_HPP
 
 typedef struct
 {

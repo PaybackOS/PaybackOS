@@ -2,9 +2,11 @@
 #include <stdint.h> // for uintptr_t
 
 #define PAGE_SIZE 4096 // Define the page size
-#define MAX_PAGES 1024 // Define maximum pages for this example
+#define MEMORY_POOL_START 0x200000 // Starting address for the memory pool (2 MB)
+#define MEMORY_POOL_SIZE   (1 * 1024 * 1024) // 1 MB in bytes
+#define MAX_PAGES (MEMORY_POOL_SIZE / PAGE_SIZE) // Calculate maximum pages
 
-static char memory_pool[PAGE_SIZE * MAX_PAGES];
+static uintptr_t *memory_pool = (uintptr_t *)MEMORY_POOL_START; // Pointer to the memory pool
 static int pages_used = 0;
 
 // Simple spinlock structure
@@ -14,7 +16,7 @@ typedef struct {
 
 static Spinlock memory_lock = {0}; // Initialize the lock
 
-/** This function is supposed to lock the memory data structures. 
+/** This function locks the memory data structures. 
  *
  * \return 0 if the lock was acquired successfully. Anything else is
  * failure.
@@ -36,7 +38,7 @@ extern int liballoc_unlock() {
     return 0; // Lock released successfully
 }
 
-/** This is the hook into the local system which allocates pages. 
+/** This function allocates pages from a fixed memory pool. 
  *
  * \return NULL if the pages were not allocated.
  * \return A pointer to the allocated memory.
@@ -46,18 +48,19 @@ extern void* liballoc_alloc(int num_pages) {
         return NULL; // Invalid request or not enough memory
     }
 
-    void* allocated_memory = (void*)(memory_pool + (pages_used * PAGE_SIZE));
+    uintptr_t *allocated_memory = memory_pool + (pages_used * PAGE_SIZE / sizeof(uintptr_t)); // Point to the next available memory
     pages_used += num_pages; // Update the number of pages used
-    return allocated_memory; // Return the allocated memory
+    return (void *)allocated_memory; // Return the allocated memory
 }
 
-/** This frees previously allocated memory. 
+/** This function frees previously allocated memory. 
  *
  * \return 0 if the memory was successfully freed.
  */
 extern int liballoc_free(void* ptr, int num_pages) {
-    // Check if the pointer is within the bounds of the memory pool
-    if (ptr < (void*)memory_pool || ptr >= (void*)(memory_pool + sizeof(memory_pool))) {
+    // In this simple model, we do not track freed memory, so just return success.
+    // Implementing a more complex memory management system would require a free list or similar.
+    if (ptr < (void *)memory_pool || ptr >= (void *)(memory_pool + MEMORY_POOL_SIZE)) {
         return -1; // Pointer out of bounds
     }
 

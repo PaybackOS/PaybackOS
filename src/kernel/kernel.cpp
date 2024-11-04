@@ -3,6 +3,8 @@
 #include <string.h>
 #include "multiboot.h"
 
+bool isdebug = false;
+
 void init_gdt();
 void idt_init(void);
 void PIC_init();
@@ -37,6 +39,17 @@ extern "C" void _init(multiboot_info_t* mb_info) {
     klog(1, "PIC started");
     idt_init();
     klog(1, "IDT loaded");
+
+    // Directly access cmdline
+    char* cmdline = (char*)(uintptr_t)mb_info->cmdline; // Cast to char pointer
+
+    // Check for the "debug" flag in the command line
+    if (strstr(cmdline, "debug") != NULL) {
+        klog(1, "Debug mode is enabled.");
+        isdebug = true;
+    } else {
+        klog(1, "Debug mode is not enabled.");
+    }
 
     // Transition to user mode
     klog(1, "Transitioning to user mode...");

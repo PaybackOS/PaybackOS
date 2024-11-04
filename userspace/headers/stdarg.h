@@ -1,5 +1,5 @@
 #ifndef STDARG_H
-#define STDARG_H 1
+#define STDARG_H
 
 // A simple type to represent the variable argument list
 typedef char* va_list;
