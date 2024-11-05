@@ -1,5 +1,5 @@
-// Function prototypes
-void klog(int level, const char* msg);
+#include <stdio.h>
+#include <pid.h>
 
 #define MAX_PROCESSES 256
 

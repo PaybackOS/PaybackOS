@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 extern bool isdebug;
+extern bool crashme;
 
 // Define our registers that we can use in our syscall handler
 typedef struct
@@ -24,6 +25,7 @@ typedef struct
 #define Free 7 // Free
 #define Calloc 8 // Calloc
 #define Realloc 9 // Realloc
+#define FullDebug 10 // Check if the system should do a full debug (including crashing)
 
 // Our system call function, this is called by int $80
 void syscall_handler(stack_frame_t *frame) {
@@ -54,6 +56,11 @@ void syscall_handler(stack_frame_t *frame) {
     } else if (frame->eax == Realloc) {
         /*the EAX register is used as return*/frame->eax = (uint32_t)krealloc((void*)frame->ebx, frame->ecx); // Resize the pointer
         return;
+    } else if (frame->eax == FullDebug) {
+        frame->eax = crashme;
+        return;
+    } else {
+        kprintf("Interrupt %x is not a real number", frame->int_num);
     }
     return; // If no valid syscall number, do nothing
 }

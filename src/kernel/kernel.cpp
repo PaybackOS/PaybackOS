@@ -4,6 +4,7 @@
 #include "multiboot.h"
 
 bool isdebug = false;
+bool crashme = false;
 
 void init_gdt();
 void idt_init(void);
@@ -47,7 +48,9 @@ extern "C" void _init(multiboot_info_t* mb_info) {
     if (strstr(cmdline, "debug") != NULL) {
         klog(1, "Debug mode is enabled.");
         isdebug = true;
-    } else {
+    } if (strstr(cmdline, "crashme") != NULL) {
+        crashme = true;
+    }  else {
         klog(1, "Debug mode is not enabled.");
     }
 

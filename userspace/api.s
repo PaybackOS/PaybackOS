@@ -3,6 +3,7 @@
 .global klog
 .global halt
 .global checkdebug
+.global fulldebug
 .global malloc
 .global free
 .global realloc
@@ -61,5 +62,10 @@ realloc:
     movl $9, %eax # The realloc (resize) function
     movl 4(%esp), %eax # The pointer
     movl 8(%esp), %eax # The size
+    int $80
+    ret
+
+fulldebug:
+    movl $10, %eax
     int $80
     ret
