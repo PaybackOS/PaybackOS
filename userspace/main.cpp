@@ -12,6 +12,7 @@ extern "C" void userspace_init(void) {
         klog(1, (char*)ptr);
         free(ptr);
     } else if (fulldebug() == true) {
+        printf("Crashing system!");
         asm("cli");
     }
     while(true) {
