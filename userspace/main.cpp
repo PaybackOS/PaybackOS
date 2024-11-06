@@ -14,9 +14,6 @@ extern "C" void userspace_init(void) {
     } else if (fulldebug() == true) {
         printf("Crashing system!");
         asm("cli");
-    }
-    while(true) {
-        
-    }
-    delete_pid(0); // only do if while loop fails
+    } while (true);
+    delete_pid(0);
 }
