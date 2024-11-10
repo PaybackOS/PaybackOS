@@ -3,11 +3,6 @@
 
 #include <stddef.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
 /** This is a boundary tag which is prepended to the
  * page or section of a page which we have allocated. It is
  * used to identify valid memory blocks that the
@@ -65,9 +60,5 @@ extern void* liballoc_alloc(int);
  * \return 0 if the memory was successfully freed.
  */
 extern int liballoc_free(void*,int);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

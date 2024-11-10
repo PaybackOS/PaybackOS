@@ -12,5 +12,5 @@ PaybackOS is a simple hobby Operating System written from scratch for older devi
 - [x] A start of the standard library
 - [x] A simple user mode part of the kernel
 - [x] A way for the userspace to call the kernel API
-- [x] A simple shell
+- [ ] A simple shell
 - [ ] A disk driver

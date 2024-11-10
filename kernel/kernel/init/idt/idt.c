@@ -46,7 +46,7 @@ void idt_init(void) {
     }
     
     //Set syscall DPL=3 to allow "int 80" software interrupt from usermode
-    // set a interrupt to be used from userspace idt_set_descriptor(intnum, (uintptr_t)isr_stub_table[intnum], 0x8E | 3 << 5);
+    idt_set_descriptor(80, (uintptr_t)isr_stub_table[80], 0x8E | 3 << 5);
 
     init_isr_handlers();
 

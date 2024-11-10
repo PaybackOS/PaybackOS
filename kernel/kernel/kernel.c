@@ -6,7 +6,6 @@
 #include "multiboot.h"
 
 bool isdebug = false;
-bool crashme = false;
 
 // Function prototypes
 void idt_init(void);
@@ -36,8 +35,6 @@ void _init(multiboot_info_t* mb_info) {
     if (strstr(cmdline, "debug") != NULL) {
         klog(1, "Debug mode is enabled.");
         isdebug = true;
-    } if (strstr(cmdline, "crashme") != NULL) {
-        crashme = true;
     }
 
     // Transition to user mode

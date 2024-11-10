@@ -1,5 +1,5 @@
-#ifndef IDTCOMMON_HPP
-#define IDTCOMMON_HPP
+#ifndef IDTCOMMON_H
+#define IDTCOMMON_H
 
 #include <stdint.h>
 

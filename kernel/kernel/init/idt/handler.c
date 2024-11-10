@@ -108,6 +108,7 @@ void init_isr_handlers() {
     for (int index = 32; index < 48; index++)
         isr_dispatch_table[index] = default_irq_handler;
     register_isr_handler(33, keyboard_handler);
+    register_isr_handler(80, syscall_handler);
 }
 
 void print_stack_trace() {

@@ -42,8 +42,6 @@ _start:
 	push %eax  // Push multiboot magic number
 	push %ebx  // Push multiboot info pointer
 
-	call call_constructors
-
 	// Init the GDT
 	call init_gdt
 

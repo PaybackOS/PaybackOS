@@ -24,18 +24,10 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15,
 };
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 size_t strlen(const char* str);
 void terminal_initialize(void);
 void terminal_setcolor(uint8_t color);
 void putchar(char c);
 void print(const char* data);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
