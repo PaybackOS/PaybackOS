@@ -1,6 +1,5 @@
-#ifndef TTY_HPP
-#define TTY_HPP 1
-#pragma once
+#ifndef TTY_H
+#define TTY_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -24,16 +23,19 @@ enum vga_color {
 	VGA_COLOR_LIGHT_BROWN = 14,
 	VGA_COLOR_WHITE = 15,
 };
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 size_t strlen(const char* str);
 void terminal_initialize(void);
-namespace vga {
-	void terminal_setcolor(uint8_t color);
-	void putchar(char c);
-	void print(const char* data);
-    void move_cursor_left();
-    void move_cursor_right();
-	void move_cursor_down();
-	void move_cursor_up();
+void terminal_setcolor(uint8_t color);
+void putchar(char c);
+void print(const char* data);
+
+#ifdef __cplusplus
 }
+#endif
 
 #endif

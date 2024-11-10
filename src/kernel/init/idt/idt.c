@@ -1,8 +1,8 @@
 #include <stdint.h>
-#include "idtcommon.hpp"
+#include "idtcommon.h"
 
 void init_isr_handlers();
-extern "C" void isr_stub_80();  // Declare the ISR stub as extern
+extern void isr_stub_80();  // Declare the ISR stub as extern
 
 typedef struct {
     uint16_t isr_low;      // Lower 16 bits of ISR address
@@ -46,7 +46,7 @@ void idt_init(void) {
     }
     
     //Set syscall DPL=3 to allow "int 80" software interrupt from usermode
-    idt_set_descriptor(80, (uintptr_t)isr_stub_table[80], 0x8E | 3 << 5);
+    // set a interrupt to be used from userspace idt_set_descriptor(intnum, (uintptr_t)isr_stub_table[intnum], 0x8E | 3 << 5);
 
     init_isr_handlers();
 

@@ -93,7 +93,7 @@ void tss_flush(uint16_t tss_segment_selector) {
 }
 
 // Initialize the GDT and TSS
-extern "C" void init_gdt() {
+void init_gdt() {
     // Null descriptor (0x0000)
     set_gdt_entry(0, 0, 0, 0, 0);
 

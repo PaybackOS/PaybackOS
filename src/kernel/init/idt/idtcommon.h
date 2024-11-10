@@ -1,6 +1,8 @@
 #ifndef IDTCOMMON_HPP
 #define IDTCOMMON_HPP
 
+#include <stdint.h>
+
 typedef struct
 {
 	uint32_t gs, fs, es, ds;

@@ -1,8 +1,5 @@
-#include <tty.hpp>
+#include <tty.h>
 #include <stdarg.h>
-
-using vga::print;
-using vga::putchar;
 
 // Helper function to print an integer in base 10
 void kprint_int(int num) {

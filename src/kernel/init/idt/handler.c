@@ -1,14 +1,14 @@
-#include <tty.hpp>
-#include <stdio.hpp>
+#include <tty.h>
+#include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include "port.h"
-#include "keyhandler.h"
-#include "idtcommon.hpp"
+#include "idtcommon.h"
 
 void register_isr_handler(uint8_t num, isr_t handler);
 void syscall_handler(stack_frame_t *frame);
 
-isr_t isr_dispatch_table[256] = { nullptr };
+isr_t isr_dispatch_table[256] = { NULL };
 
 const char *exception_descriptions[] = {
     "Division By Zero",
@@ -89,7 +89,6 @@ void keyboard_handler(stack_frame_t *frame) {
     // For every keyboard interrupt we must read port 0x60
     //     otherwise we will not get further keystrokes
     uint8_t scancode = inb(0x60);
-    key_translate(scancode);
 
     send_eoi(irq_number);
     return;
@@ -109,10 +108,9 @@ void init_isr_handlers() {
     for (int index = 32; index < 48; index++)
         isr_dispatch_table[index] = default_irq_handler;
     register_isr_handler(33, keyboard_handler);
-    register_isr_handler(80, syscall_handler);
 }
 
-extern "C" void print_stack_trace() {
+void print_stack_trace() {
     void **stack_ptr;
     asm volatile("mov %%esp, %0" : "=r"(stack_ptr));  // Get current stack pointer
 
@@ -127,7 +125,7 @@ bool is_exception(int int_num) {
     return int_num >= 0 && int_num < 32; // Checks if it's any exception (0-31)
 }
 
-extern "C" void C_handler(stack_frame_t *frame) {
+void C_handler(stack_frame_t *frame) {
     if (frame->int_num >= 256) {
         klog(3, "Invalid interrupt number");
         return;
@@ -137,7 +135,7 @@ extern "C" void C_handler(stack_frame_t *frame) {
         print_stack_trace(); // Print the stack trace
     }
 
-    if (isr_dispatch_table[frame->int_num] == nullptr) {
+    if (isr_dispatch_table[frame->int_num] == NULL) {
         klog(3, "No handler registered");
         return;
     }
