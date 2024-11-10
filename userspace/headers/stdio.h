@@ -11,12 +11,15 @@ void user_print(const char* str);
 void user_putchar(char c);
 
 // Log a message with a specific log level
-void user_klog(int level, const char* log);
+void log(int level, const char* log);
 
 // Halt the system
-void user_halt(void);
+void halt(void);
 
 // Check if debug mode is active
-bool user_checkdebug(void);
+bool checkdebug(void);
+
+// Formatted printing
+void printf(const char* format, ...);
 
 #endif

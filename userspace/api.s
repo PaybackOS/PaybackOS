@@ -1,9 +1,8 @@
 .global user_print
 .global user_putchar
-.global user_klog
-.global user_halt
-.global user_checkdebug
-.global user_fulldebug
+.global log
+.global halt
+.global checkdebug
 .global user_malloc
 .global user_free
 .global user_realloc
@@ -21,19 +20,19 @@ user_putchar:
     int $80
     ret
 
-user_klog:
+log:
     movl $3, %eax # Log with levels
     movl 4(%esp), %ebx # Log level
     movl 8(%esp), %ecx # Log
     int $80
     ret
 
-user_halt:
+halt:
     movl $0, %eax # Halt
     int $80
     ret
 
-user_checkdebug:
+checkdebug:
     movl $5, %eax # Check if debug
     int $80
     ret
