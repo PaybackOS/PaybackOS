@@ -60,7 +60,6 @@ void __attribute__((noreturn)) default_exception_handler(stack_frame_t *frame)
         klog(3, "Unknown exception");
 
     klog(3, "Halting Kernel");
-    while(1) __asm__ __volatile__ ("hlt");
 }
 
 void send_eoi(uint8_t irq)
@@ -97,8 +96,6 @@ void keyboard_handler(stack_frame_t *frame) {
 void __attribute__((noreturn)) divbyzero_handler(stack_frame_t *frame) {
     (void)frame;
     klog(3, exception_descriptions[frame->int_num]);
-
-    while(1) __asm__ __volatile__ ("hlt");
 }
 
 void init_isr_handlers() {
@@ -129,7 +126,6 @@ bool is_exception(int int_num) {
 void C_handler(stack_frame_t *frame) {
     if (frame->int_num >= 256) {
         klog(3, "Invalid interrupt number");
-        return;
     }
 
     if (is_exception(frame->int_num)) {
@@ -138,7 +134,6 @@ void C_handler(stack_frame_t *frame) {
 
     if (isr_dispatch_table[frame->int_num] == NULL) {
         klog(3, "No handler registered");
-        return;
     }
 
     isr_dispatch_table[frame->int_num](frame);

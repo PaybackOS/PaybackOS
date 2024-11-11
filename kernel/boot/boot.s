@@ -1,5 +1,6 @@
-.extern call_constructors
 .extern init_gdt
+.extern _init
+.extern kernel_main
 
 /* Declare constants for the multiboot header. */
 .set ALIGN,    1<<0             /* align loaded modules on page boundaries */
@@ -45,9 +46,12 @@ _start:
 	// Init the GDT
 	call init_gdt
 
+	// Init VGATM (VGA Text Mode), GDT, PIC, IDT and such
+	call _init
+
 	// Call our kernel
 	xor %ebp, %ebp    // Set %ebp to NULL for stack trace
-	call _init
+	call kernel_main
 
 	// If our kernel returns, shutdown everything
 	cli
