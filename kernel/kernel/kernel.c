@@ -8,7 +8,6 @@ void switch_to_user_mode();
 void show_copyright();
 
 void kernel_main(multiboot_info_t* mb_info) {
-    // Show that this software is under public domain
     show_copyright();
     // Enter the usermode
     switch_to_user_mode();
