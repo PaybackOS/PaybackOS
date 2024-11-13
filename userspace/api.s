@@ -7,6 +7,7 @@
 .global user_free
 .global user_realloc
 .global user_calloc
+.global get_scancode
 
 user_print:
     movl $1, %eax # Write string
@@ -60,5 +61,10 @@ user_realloc:
     movl $9, %eax # The realloc (resize) function
     movl 4(%esp), %eax # The pointer
     movl 8(%esp), %eax # The size
+    int $80
+    ret
+
+get_scancode:
+    movl $10, %eax
     int $80
     ret

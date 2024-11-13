@@ -7,6 +7,7 @@
 
 void register_isr_handler(uint8_t num, isr_t handler);
 void syscall_handler(stack_frame_t *frame);
+void key_translate(uint8_t scancode);
 
 isr_t isr_dispatch_table[256] = { NULL };
 
@@ -81,14 +82,14 @@ void default_irq_handler(stack_frame_t *frame)
     return;
 }
 
+
 void keyboard_handler(stack_frame_t *frame) {
     uint8_t irq_number = frame->int_num - 32;
 
     // Retrive scancode from keyboard buffer.
-    // For every keyboard interrupt we must read port 0x60
-    //     otherwise we will not get further keystrokes
     uint8_t scancode = inb(0x60);
-
+    key_translate(scancode);
+    
     send_eoi(irq_number);
     return;
 }

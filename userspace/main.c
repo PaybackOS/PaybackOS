@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 
 void userspace_init(void) {
     if (checkdebug() == true) {

@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <tty.h>
 #include <serial.h>
+#include <string.h>
 #include <stdbool.h>
+#include <boot/multiboot.h>
 
 // Function prototypes
 void idt_init(void);
@@ -11,7 +13,14 @@ void set_kernel_stack(uintptr_t);
 // Stack for system calls
 uint8_t esp0_stack[4096] __attribute__((aligned(4096)));
 
-void _init() {
+bool isdebug = false;
+
+void _init(multiboot_info_t* mb_info) {
+    char* cmdline = (char*)(uintptr_t)mb_info->cmdline; // Cast to char pointer
+
+    if (strstr(cmdline, "debug") != NULL) {
+        isdebug = true;
+    }
     terminal_initialize();
     klog(0, "Started VGATM (VGA Text Mode)");
     // Startup the serial port
