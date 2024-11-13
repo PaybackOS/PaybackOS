@@ -1,16 +1,13 @@
 include make.config
 
 # Define variables
-SRC_DIR = src
-USERSPACE_DIR = userspace
-OBJ_DIR = obj
 TARGET = PaybackOS.elf
 
 # Automatically find all source files in src/ including .c files and excluding userspace/ unless specified
-SRCS := $(shell find $(SRC_DIR) -name '*.cpp' -o -name '*.c' -o -name '*.s' -o -name '*.asm' -not -path "$(SRC_DIR)/userspace/*")
+SRCS := $(shell find $(SRC_DIR) -name '*.c' -o -name '*.s' -o -name '*.asm' -not -path "$(SRC_DIR)/userspace/*")
 
 # Automatically find all source files in userspace/
-USERSPACE_SRCS := $(shell find $(USERSPACE_DIR) -name '*.cpp' -o -name '*.c' -o -name '*.s' -o -name '*.asm')
+USERSPACE_SRCS := $(shell find $(USERSPACE_DIR) -name '*.c' -o -name '*.s' -o -name '*.asm')
 
 # Object files for src/ and userspace/
 OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(patsubst $(SRC_DIR)/%.s,$(OBJ_DIR)/%.o,$(patsubst $(SRC_DIR)/%.asm,$(OBJ_DIR)/%.o,$(SRCS)))))
@@ -32,15 +29,11 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.asm
 	mkdir -p $(dir $@)  # Create the target directory
 	$(AS) $(ASFLAGS) -o $@ $<
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	mkdir -p $(dir $@)  # Create the target directory
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(dir $@)  # Create the target directory
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Pattern rules to build .o files from .s, .asm, .cpp, and .c files for userspace/
+# Pattern rules to build for the userspace4
 $(OBJ_DIR)/userspace/%.o: $(USERSPACE_DIR)/%.s
 	mkdir -p $(dir $@)  # Create the target directory
 	$(AS) $(ASFLAGS) -o $@ $<
@@ -49,13 +42,9 @@ $(OBJ_DIR)/userspace/%.o: $(USERSPACE_DIR)/%.asm
 	mkdir -p $(dir $@)  # Create the target directory
 	$(AS) $(ASFLAGS) -o $@ $<
 
-$(OBJ_DIR)/userspace/%.o: $(USERSPACE_DIR)/%.cpp
-	mkdir -p $(dir $@)  # Create the target directory
-	$(CXX) $(USERCXXFLAGS) -c $< -o $@
-
 $(OBJ_DIR)/userspace/%.o: $(USERSPACE_DIR)/%.c
 	mkdir -p $(dir $@)  # Create the target directory
-	$(CC) $(USERCFLAGS) $< -o $@
+	$(CC) $(USERCFLAGS) -c $< -o $@
 
 # Create the GRUB iso
 iso: build

@@ -1,12 +1,18 @@
 #ifndef STDLIB_H
 #define STDLIB_H
-#pragma once
 
 #include <stddef.h>
 
-void *malloc(size_t);				//< The standard function.
-void *realloc(void *, size_t);		//< The standard function.
-void *calloc(size_t, size_t);		//< The standard function.
-void free(void *);					//< The standard function.
+// Allocate memory of a specified size
+void* user_malloc(size_t size);
+
+// Free allocated memory at a specified pointer
+void user_free(void* ptr);
+
+// Allocate zero-initialized memory (like calloc)
+void* user_calloc(size_t num, size_t size);
+
+// Reallocate memory (resize the allocated block)
+void* user_realloc(void* ptr, size_t size);
 
 #endif

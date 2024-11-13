@@ -1,18 +1,15 @@
 #include <stdarg.h>
-
-void print(const char* str);
-void putchar(char c);
-void klog(int level, const char* msg);
+#include <stdio.h>
 
 void print_integer(int num) {
     if (num < 0) {
-        putchar('-'); // Print the negative sign for negative numbers
+        user_putchar('-'); // Print the negative sign for negative numbers
         num = -num;   // Convert to positive for further processing
     }
     if (num / 10) {
         print_integer(num / 10); // Recursive call for higher digits
     }
-    putchar(num % 10 + '0'); // Print the last digit
+    user_putchar(num % 10 + '0'); // Print the last digit
 }
 
 void printf(const char* format, ...) {
@@ -26,14 +23,12 @@ void printf(const char* format, ...) {
             switch (*format) {
                 case 'c': { // Handle character
                     char c = (char)va_arg(args, int); // Retrieve argument as char
-                    putchar(c); // Print character
+                    user_putchar(c); // Print character
                     break;
                 }
                 case 's': { // Handle string
                     const char* str = va_arg(args, const char*); // Retrieve string argument
-                    while (*str) {
-                        putchar(*str++); // Print each character in the string
-                    }
+                    user_print(str);
                     break;
                 }
                 case 'd': { // Handle integer
@@ -42,14 +37,14 @@ void printf(const char* format, ...) {
                     break;
                 }
                 case '%': { // Handle literal '%' character
-                    putchar('%');
+                    user_putchar('%');
                     break;
                 }
                 default:
                     break; // Ignore unrecognized format specifiers
             }
         } else {
-            putchar(*format); // Print regular characters
+            user_putchar(*format); // Print regular characters
         }
         format++; // Move to the next character in the format string
     }
