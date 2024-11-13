@@ -16,5 +16,5 @@ void kernel_main(multiboot_info_t* mb_info) {
 }
 
 void show_copyright() {
-    kprintf("All code and these works are under public domain and available at https://github.com/PaybackOS/PaybackOS\n");
+    kprintf("All of this code is licensed under the MIT license https://github.com/PaybackOS/PaybackOS\n");
 }
