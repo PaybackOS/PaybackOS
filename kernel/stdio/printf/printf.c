@@ -8,13 +8,13 @@ void kprint_int(int num) {
 
     // Handle negative numbers
     if (num < 0) {
-        putchar('-');
+        kputchar('-');
         num = -num;
     }
 
     // Convert the number to string
     if (num == 0) {
-        putchar('0');
+        kputchar('0');
         return;
     }
 
@@ -25,7 +25,7 @@ void kprint_int(int num) {
 
     // Print the number in reverse
     while (i > 0) {
-        putchar(buffer[--i]);
+        kputchar(buffer[--i]);
     }
 }
 
@@ -36,7 +36,7 @@ void kprint_hex(unsigned int num) {
     int i = 0;
 
     if (num == 0) {
-        putchar('0');
+        kputchar('0');
         return;
     }
 
@@ -48,7 +48,7 @@ void kprint_hex(unsigned int num) {
 
     // Print the hex number in reverse
     while (i > 0) {
-        putchar(buffer[--i]);
+        kputchar(buffer[--i]);
     }
 }
 
@@ -63,7 +63,7 @@ void kprintf(const char *fmt, ...) {
             switch (*p) {
                 case 'c': {
                     char c = (char) va_arg(args, int);
-                    putchar(c);
+                    kputchar(c);
                     break;
                 }
                 case 's': {
@@ -84,13 +84,13 @@ void kprintf(const char *fmt, ...) {
                 }
                 default: {
                     // If unknown format specifier, just print it as-is
-                    putchar('%');
-                    putchar(*p);
+                    kputchar('%');
+                    kputchar(*p);
                     break;
                 }
             }
         } else {
-            putchar(*p);  // Just print regular characters
+            kputchar(*p);  // Just print regular characters
         }
     }
 

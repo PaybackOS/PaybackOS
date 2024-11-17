@@ -15,7 +15,7 @@ user_print:
     int $80
     ret
 
-user_putchar:
+putchar:
     movl $2, %eax # Write Character
     movl 4(%esp), %ebx # Character
     int $80

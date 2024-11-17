@@ -35,7 +35,7 @@ void syscall_handler(stack_frame_t *frame) {
         kprintf("%s", (char*)frame->ebx); // Assuming ebx points to a string
         return;
     } else if (frame->eax == Putchar) {
-        putchar(frame->ebx); // Assuming ebx is a character
+        kputchar(frame->ebx); // Assuming ebx is a character
         return;
     } else if (frame->eax == Log) {
         klog(frame->ebx, (const char*)frame->ecx); // Logging

@@ -53,7 +53,7 @@ void key_translate(uint8_t scancode) {
     } else if (scancode == BACKSPACE) {
         kprintf("\b");
     } else if (scancode == ENTER) {
-        putchar('\n');
+        kputchar('\n');
     } else {
         char letter;
 

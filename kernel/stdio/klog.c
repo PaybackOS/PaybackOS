@@ -24,7 +24,6 @@ void klog(int level, const char* info) {
         terminal_setcolor(VGA_COLOR_RED);
         print("CRIT ERR ");
         kprintf("%s\n", info);
-        putchar('\n');
         asm("cli; hlt");
     }
 }
