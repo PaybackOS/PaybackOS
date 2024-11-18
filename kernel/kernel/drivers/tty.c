@@ -103,7 +103,7 @@ void terminal_scroll() {
     terminal_column = 0;
     update_cursor(terminal_column, terminal_row);
 }
-void putchar(char c) {
+void kputchar(char c) {
     if (c == '\n') {
         terminal_column = 0;
         if (++terminal_row == VGA_HEIGHT) {
@@ -131,12 +131,12 @@ void putchar(char c) {
 }
 void terminal_write(const char* data, size_t size) {
     for (size_t i = 0; i < size; i++) {
-        putchar(data[i]);
+        kputchar(data[i]);
     }
 }
 void print(const char* data) {
     while (*data != '\0') {
-        putchar(*data);
+        kputchar(*data);
         data++;
     }
 }

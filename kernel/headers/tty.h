@@ -27,7 +27,7 @@ enum vga_color {
 size_t strlen(const char* str);
 void terminal_initialize(void);
 void terminal_setcolor(uint8_t color);
-void putchar(char c);
+void kputchar(char c);
 void print(const char* data);
 
 #endif

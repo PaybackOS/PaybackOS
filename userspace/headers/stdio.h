@@ -8,7 +8,7 @@
 void user_print(const char* str);
 
 // Write a character to the user space
-void user_putchar(char c);
+void putchar(char c);
 
 // Log a message with a specific log level
 void log(int level, const char* log);
@@ -18,9 +18,6 @@ void halt(void);
 
 // Check if debug mode is active
 bool checkdebug(void);
-
-// Formatted printing
-void printf(const char* format, ...);
 
 uint8_t get_scancode();
 
