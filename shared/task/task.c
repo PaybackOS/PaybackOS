@@ -63,7 +63,7 @@ void scheduler(void) {
         if (num_tasks > 0) {
             tasks[current_task].task_func();  // Execute the current task
         } else {
-            user_print("No tasks to execute.\n");
+            print("No tasks to execute.\n");
             break;  // No tasks available, exit the scheduler
         }
     }
