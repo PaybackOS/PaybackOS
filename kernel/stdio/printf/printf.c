@@ -68,7 +68,7 @@ void kprintf(const char *fmt, ...) {
                 }
                 case 's': {
                     const char *str = va_arg(args, const char *);
-                    print(str);
+                    kprint(str);
                     break;
                 }
                 case 'd': {
@@ -78,7 +78,7 @@ void kprintf(const char *fmt, ...) {
                 }
                 case 'x': {
                     unsigned int num = va_arg(args, unsigned int);
-                    print("0x");
+                    kprint("0x");
                     kprint_hex(num);
                     break;
                 }

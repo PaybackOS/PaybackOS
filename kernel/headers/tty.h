@@ -28,6 +28,6 @@ size_t strlen(const char* str);
 void terminal_initialize(void);
 void terminal_setcolor(uint8_t color);
 void kputchar(char c);
-void print(const char* data);
+void kprint(const char* data);
 
 #endif

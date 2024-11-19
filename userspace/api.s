@@ -1,15 +1,16 @@
-.global user_print
-.global user_putchar
+// Stdio stuff
+.global print
+.global putchar
 .global log
 .global halt
 .global checkdebug
+// Stdlib stuff
 .global user_malloc
 .global user_free
 .global user_realloc
 .global user_calloc
-.global get_scancode
 
-user_print:
+print:
     movl $1, %eax # Write string
     movl 4(%esp), %ebx  # String we are writing
     int $80
@@ -61,10 +62,5 @@ user_realloc:
     movl $9, %eax # The realloc (resize) function
     movl 4(%esp), %eax # The pointer
     movl 8(%esp), %eax # The size
-    int $80
-    ret
-
-get_scancode:
-    movl $10, %eax
     int $80
     ret

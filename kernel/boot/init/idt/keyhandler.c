@@ -67,6 +67,6 @@ void key_translate(uint8_t scancode) {
 
         append(key_buffer, letter);
         char str[2] = {letter, '\0'};
-        print(str);
+        kprint(str);
     }
 }

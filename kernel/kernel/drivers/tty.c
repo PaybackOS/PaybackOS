@@ -134,7 +134,7 @@ void terminal_write(const char* data, size_t size) {
         kputchar(data[i]);
     }
 }
-void print(const char* data) {
+void kprint(const char* data) {
     while (*data != '\0') {
         kputchar(*data);
         data++;

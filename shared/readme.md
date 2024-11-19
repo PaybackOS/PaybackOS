@@ -1,2 +1,2 @@
 # Shared
-The shared code is ring 3 level code (userspace) that the kernel will be able to call. This is mostly useful so we do not need to implement stuff 2 times and instead we can just use this for stuff like our scheduler/tasking and such
+The shared code is ring 3 level code (userspace) that the kernel will be able to call. This is mostly useful so we do not need to implement stuff 2 times and instead we can just use this for stuff like our scheduler/tasking and such (even if the code such as the scheduler is used to start a kernel mode thing since its called from kernel mode it will still work just fine)

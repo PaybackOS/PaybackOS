@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 // Print a string to the user space
-void user_print(const char* str);
+void print(const char* str);
 
 // Write a character to the user space
 void putchar(char c);
@@ -19,6 +19,5 @@ void halt(void);
 // Check if debug mode is active
 bool checkdebug(void);
 
-uint8_t get_scancode();
 
 #endif
