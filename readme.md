@@ -2,7 +2,7 @@
 
 ## What is PaybackOS
 
-PaybackOS is a simple hobby Operating System written from scratch for older devices, it is written in C, C++ and GNU assembly.
+PaybackOS is a simple hobby Operating System written from scratch for older devices, it is written in C, and GNU assembly.
 
 ## Goals
 
