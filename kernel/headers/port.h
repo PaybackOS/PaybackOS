@@ -5,8 +5,8 @@
 
 void outb(uint16_t port, uint8_t val);
 uint8_t inb(uint16_t port);
+void insw(uint16_t port, void *buffer, uint32_t count);
+void outsw(uint16_t port, const void *buffer, uint32_t count);
 void io_wait(void);
-uint16_t inw(uint16_t port);
-void outw(uint16_t port, uint16_t value);
 
 #endif

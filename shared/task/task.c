@@ -1,4 +1,4 @@
-#include <stdio.h>  // Assuming tty.h defines putchar() and print(char*)
+#include <stdio.h>
 
 #define MAX_TASKS 10  // Maximum number of tasks we can handle
 

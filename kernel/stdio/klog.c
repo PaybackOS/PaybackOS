@@ -10,19 +10,20 @@ void klog(int level, const char* info) {
         kprint("Debug ");
         terminal_setcolor(VGA_COLOR_LIGHT_GREY);
         kprintf("%s\n", info);
-    } else if (level) {
+    } else if (level == 1) {
         terminal_setcolor(VGA_COLOR_GREEN);
         kprint("OK ");
         terminal_setcolor(VGA_COLOR_LIGHT_GREY);
         kprintf("%s\n", info);
-    } if (level == 2) {
+    } else if (level == 2) {
         terminal_setcolor(VGA_COLOR_LIGHT_RED);
         kprint("WARN ");
         terminal_setcolor(VGA_COLOR_LIGHT_GREY);
         kprintf("%s\n", info);
-    } if (level == 3) {
+    } else if (level == 3) {
         terminal_setcolor(VGA_COLOR_RED);
         kprint("CRIT ERR ");
+        terminal_setcolor(VGA_COLOR_LIGHT_GREY);
         kprintf("%s\n", info);
         asm("cli; hlt");
     }

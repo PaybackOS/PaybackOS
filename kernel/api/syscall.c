@@ -32,10 +32,10 @@ void syscall_handler(stack_frame_t *frame) {
         klog(2, "Halting CPU.\n");
         asm("cli; hlt");
     } else if (frame->eax == Print) {
-        kprintf("%s", (char*)frame->ebx); // Assuming ebx points to a string
+        kprintf("%s", (char*)frame->ebx);
         return;
     } else if (frame->eax == Putchar) {
-        kputchar(frame->ebx); // Assuming ebx is a character
+        kputchar(frame->ebx);
         return;
     } else if (frame->eax == Log) {
         klog(frame->ebx, (const char*)frame->ecx); // Logging
