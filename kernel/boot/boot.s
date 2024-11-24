@@ -34,6 +34,11 @@ boot_page_table1:
 .global _start
 .type _start, @function
 _start:
+	# Setup a stack before anything else
+	mov $(stack_top - 0xC0000000), %esp
+	# Push the multiboot info pointer. Will be used as first parameter to _init
+	push %ebx
+
 	# Physical address of boot_page_table1.
 	# TODO: I recall seeing some assembly that used a macro to do the
 	#       conversions to and from physical. Maybe this should be done in this
@@ -48,16 +53,15 @@ _start:
 	movl $1023, %ecx
 
 1:
-	# Only map the kernel.
-	cmpl $_kernel_start, %esi
-	jl 2f
+	# Map from 0x00000000 to _kernel_end including the first megabyte where it
+    # is likely (but not guaranteed) that the multiboot info structures reside.
 	cmpl $(_kernel_end - 0xC0000000), %esi
 	jge 3f
 
-	# Map physical address as "present, writable". Note that this maps
+	# Map physical address as "present, writable, user". Note that this maps
 	# .text and .rodata as writable. Mind security and map them as non-writable.
 	movl %esi, %edx
-	orl $0x003, %edx
+	orl $0x007, %edx
 	movl %edx, (%edi)
 
 2:
@@ -101,21 +105,21 @@ _start:
 4:
 	# At this point, paging is fully set up and enabled.
 
-	# Unmap the identity mapping as it is now unnecessary. 
-	movl $0, boot_page_directory + 0
-
-	# Reload crc3 to force a TLB flush so the changes to take effect.
-	movl %cr3, %ecx
-	movl %ecx, %cr3
-
-	# Set up the stack.
-	mov $stack_top, %esp
+	# Swith the stack pointer to its higher half address
+	addl $0xC0000000, %esp
 
 	# Init the GDT
 	call init_gdt
 
 	# init the other stuff (IDT and such)
 	call _init
+
+	# Unmap the identity mapping as it is now unnecessary. 
+	movl $0, boot_page_directory + 0
+
+	# Reload crc3 to force a TLB flush so the changes to take effect.
+	movl %cr3, %ecx
+	movl %ecx, %cr3
 
 	# Enter the high-level kernel.
 	call kernel_main
