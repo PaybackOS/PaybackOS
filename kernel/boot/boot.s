@@ -84,8 +84,8 @@ _start:
 	# would instead page fault if there was no identity mapping.
 
 	# Map the page table to both virtual addresses 0x00000000 and 0xC0000000.
-	movl $(boot_page_table1 - 0xC0000000 + 0x003), boot_page_directory - 0xC0000000 + 0
-	movl $(boot_page_table1 - 0xC0000000 + 0x003), boot_page_directory - 0xC0000000 + 768 * 4
+	movl $(boot_page_table1 - 0xC0000000 + 0x007), boot_page_directory - 0xC0000000 + 0
+	movl $(boot_page_table1 - 0xC0000000 + 0x007), boot_page_directory - 0xC0000000 + 768 * 4
 
 	# Set cr3 to the address of the boot_page_directory.
 	movl $(boot_page_directory - 0xC0000000), %ecx
