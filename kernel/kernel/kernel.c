@@ -8,7 +8,8 @@
 void switch_to_user_mode();
 void show_copyright();
 
-void kernel_main(multiboot_info_t* mb_info) {
+// mb_info is processed in _init so remove it as a parameter for kernel_main
+void kernel_main(void) {
     show_copyright();
     // Enter the usermode
     switch_to_user_mode();
