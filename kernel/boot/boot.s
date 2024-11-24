@@ -105,7 +105,7 @@ _start:
 4:
 	# At this point, paging is fully set up and enabled.
 
-	# Swith the stack pointer to its higher half address
+	# Switch the stack pointer to its higher half address
 	addl $0xC0000000, %esp
 
 	# Init the GDT
@@ -117,7 +117,7 @@ _start:
 	# Unmap the identity mapping as it is now unnecessary. 
 	movl $0, boot_page_directory + 0
 
-	# Reload crc3 to force a TLB flush so the changes to take effect.
+	# Reload cr3 to force a TLB flush so the changes to take effect.
 	movl %cr3, %ecx
 	movl %ecx, %cr3
 
