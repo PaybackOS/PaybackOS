@@ -1,8 +1,4 @@
 #include <stdio.h>
-#include <tty.h>
-#include <stdbool.h>
-#include <task.h>
-#include <boot/multiboot.h>
 
 // Function prototypes
 void switch_to_user_mode();
