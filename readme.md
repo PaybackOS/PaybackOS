@@ -1,5 +1,8 @@
 # PaybackOS
 
+## This project has been halted for a short period of time
+I have decided to help work on https://github.com/KivieDev/MacBuilder-Source so I will start to work on that.
+
 ## What is PaybackOS
 
 PaybackOS is a simple hobby Operating System written from scratch for older devices, it is written in C, and GNU assembly.
