@@ -71,6 +71,7 @@ override CFLAGS += \
 # Internal C preprocessor flags that should not be changed by the user.
 override CPPFLAGS := \
     -I src \
+    -I headers \
     -isystem freestnd-c-hdrs-0bsd \
     $(CPPFLAGS) \
     -DLIMINE_API_REVISION=2 \
@@ -91,13 +92,14 @@ override LDFLAGS += \
     -gc-sections \
     -T linker.ld
 
-# Use "find" to glob all *.c, *.S, and *.asm files in the tree and obtain the
-# object and header dependency file names.
+# Use "find" to glob all *.c, *.S, *.asm, and *.sfn files in the tree and obtain
+# the object and header dependency file names.
 override SRCFILES := $(shell cd src && find -L * -type f | LC_ALL=C sort)
 override CFILES := $(filter %.c,$(SRCFILES))
 override ASFILES := $(filter %.S,$(SRCFILES))
 override NASMFILES := $(filter %.asm,$(SRCFILES))
-override OBJ := $(addprefix obj/,$(CFILES:.c=.c.o) $(ASFILES:.S=.S.o) $(NASMFILES:.asm=.asm.o))
+override SFNFILES := $(filter %.sfn,$(SRCFILES))
+override OBJ := $(addprefix obj/,$(CFILES:.c=.c.o) $(ASFILES:.S=.S.o) $(NASMFILES:.asm=.asm.o) $(SFNFILES:.sfn=.sfn.o))
 override HEADER_DEPS := $(addprefix obj/,$(CFILES:.c=.c.d) $(ASFILES:.S=.S.d))
 
 # Default target. This must come first, before header dependencies.
@@ -136,6 +138,11 @@ obj/%.S.o: src/%.S GNUmakefile
 obj/%.asm.o: src/%.asm GNUmakefile
 	mkdir -p "$$(dirname $@)"
 	nasm $(NASMFLAGS) $< -o $@
+
+# Compilation rules for *.sfn files.
+obj/%.sfn.o: src/%.sfn GNUmakefile
+	mkdir -p "$$(dirname $@)"
+	$(LD) -r -b binary -o $@ $<
 
 # Remove object files and the final executable.
 .PHONY: clean
