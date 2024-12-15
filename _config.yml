@@ -1,5 +1,5 @@
-title: Hacker theme
-description: Hacker is a theme for GitHub Pages.
-show_downloads: true
-google_analytics:
+title: PaybackOS
+description: A custom OS
+show_downloads: false
+google_analytics: false
 theme: jekyll-theme-hacker
