@@ -33,4 +33,7 @@ void ssfn_test(struct limine_framebuffer *framebuffer) {
     while (*ptr) {
         ssfn_putc(*ptr++);  // Render character and advance pen position
     }
+    while(1) {
+        
+    }
 }
