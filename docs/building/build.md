@@ -17,5 +17,5 @@ $ pacman -S qemu clang nasm grub xorriso
 
 And once you have your tools installed run this command for a 64bit ISO
 ```bash
-make build-x86_64
+make build-[arch being targeted]
 ```
