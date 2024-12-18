@@ -4,11 +4,24 @@
 #include <task.h>
 
 void testfunc1() {
+    static int itr = 0;  // Retains value across invocations
+    if (itr == 2) {
+        end_task();
+        return;  // Exit the function after removing the task
+    }
     print_str("task1\n");
+    itr++;
     yield();
 }
+
 void testfunc2() {
+    static int itr = 0;  // Retains value across invocations
+    if (itr == 2) {
+        end_task();
+        return;  // Exit the function after removing the task
+    }
     print_str("task2\n");
+    itr++;
     yield();
 }
 

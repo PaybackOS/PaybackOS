@@ -4,7 +4,7 @@
 typedef void (*task_func)();
 
 // Task list and number of active tasks
-task_func tasks[MAX_FUNCTIONS]; 
+task_func tasks[MAX_FUNCTIONS];
 int num_tasks = 0;  // Keeps track of how many tasks have been added
 
 // Current task index, used for round-robin scheduling
@@ -23,10 +23,27 @@ void yield() {
     current_task = (current_task + 1) % num_tasks;
 }
 
+// End task function (removes the current task)
+void end_task() {
+    if (num_tasks == 0) {
+        return;  // No tasks to remove
+    }
+
+    // Shift tasks down to remove the current task
+    for (int i = current_task; i < num_tasks - 1; i++) {
+        tasks[i] = tasks[i + 1];
+    }
+    num_tasks--;  // Decrement the number of tasks
+
+    // Adjust the current_task index to stay within bounds
+    if (current_task >= num_tasks) {
+        current_task = 0;  // Wrap back to the beginning if necessary
+    }
+}
+
 // Scheduler function (Round-Robin)
 void scheduler() {
-    while (1) {  // Run forever or until externally stopped
-        // Call the current task function
+    while (num_tasks > 0) {  // Run while there are tasks remaining
         tasks[current_task]();
     }
 }
