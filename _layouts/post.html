@@ -1,9 +1,11 @@
 ---
 layout: default
+title: "{{ page.title }}"  # Title definition
+author: "{{ page.author | default: site.author }}"  # Author definition after title
 ---
 <small>{{ page.date | date: "%-d %B %Y" }}</small>
 
-<p class="view">by {{ page.author | default: site.author }}</p>
+<p class="view">by {{ page.author }}</p>
 
 {{content}}
 
