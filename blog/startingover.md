@@ -1,5 +1,7 @@
 ---
-layout: default
+layout: post
+page.title: Starting over from scratch
+page.author: ThatOSDeveloper
 ---
 
 # Starting over from scratch
