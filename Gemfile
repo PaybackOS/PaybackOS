@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
-source "https://rubygems.org"
-
-gemspec
+gem "erb"
+gem "ostruct"
+gem "github-pages", group: :jekyll_plugins
