@@ -44,4 +44,6 @@ void kernel_main() {
     add_task(testfunc1);
     add_task(testfunc2);
     scheduler();
+    // Test the logging system
+    log(DEBUG, "debug test.");
 }

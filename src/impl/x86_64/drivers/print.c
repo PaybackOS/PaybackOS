@@ -66,7 +66,7 @@ void print_newline() {
     update_cursor();
 }
 
-void print_char(char character) {
+void putchar(char character) {
     if (character == '\n') {
         print_newline();
         return;
@@ -93,7 +93,7 @@ void print_str(char* str) {
             return;
         }
 
-        print_char(character);
+        putchar(character);
     }
 }
 

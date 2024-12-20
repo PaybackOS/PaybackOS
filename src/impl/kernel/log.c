@@ -1,29 +1,32 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-// Log level names
-static const char* LOG_LEVELS[] = {
-    "DEBUG",
-    "INFO",
-    "WARNING",
-    "ERROR"
-};
-
-#define NUM_LOG_LEVELS (sizeof(LOG_LEVELS) / sizeof(LOG_LEVELS[0]))
-
 void log(int level, const char* format, ...) {
-    if (level < 0 || level >= NUM_LOG_LEVELS) {
-        // Invalid log level, treat as ERROR
-        level = NUM_LOG_LEVELS - 1;
-    }
-
-    // Print log level
-    printf("[%s] ", LOG_LEVELS[level]);
-
     va_list args;
     va_start(args, format);
 
-    // Process format string
+    // Determine the log level and print appropriately
+    switch (level) {
+        case DEBUG:
+            printf("[DEBUG] ");
+            break;
+        case INFO:
+            printf("[INFO] ");
+            break;
+        case WARNING:
+            printf("[WARNING] ");
+            break;
+        case ERROR:
+            printf("[ERROR] ");
+            // Optionally handle critical error, if you want to halt the system
+            // asm("cli; hlt");
+            break;
+        default:
+            printf("[UNKNOWN] ");
+            break;
+    }
+
+    // Custom string formatting
     for (const char* ptr = format; *ptr != '\0'; ++ptr) {
         if (*ptr == '%' && *(ptr + 1) != '\0') {
             ++ptr;
@@ -34,7 +37,7 @@ void log(int level, const char* format, ...) {
                     break;
                 }
                 case 'c': { // Character
-                    char value = (char)va_arg(args, int);
+                    char value = (char) va_arg(args, int);  // `char` promoted to `int` in va_arg
                     printf("%c", value);
                     break;
                 }
@@ -43,23 +46,18 @@ void log(int level, const char* format, ...) {
                     printf("%s", value);
                     break;
                 }
-                case 'x': { // Hexadecimal
-                    int value = va_arg(args, int);
-                    printf("%x", value);
-                    break;
-                }
-                default: // Unknown format specifier, print as-is
+                default: // If unknown format specifier, just print as-is
                     printf("%%%c", *ptr);
                     break;
             }
         } else {
-            // Print regular character
+            // Print regular characters
             putchar(*ptr);
         }
     }
 
     va_end(args);
 
-    // Newline at the end of the log
-    putchar('\n');
+    // New line after log
+    printf("\n");
 }

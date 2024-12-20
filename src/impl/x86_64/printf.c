@@ -12,7 +12,7 @@ void printf(const char* format, ...) {
             switch (format[i]) {
                 case 'c': { // Character
                     char c = (char)va_arg(args, int);
-                    print_char(c);
+                    putchar(c);
                     break;
                 }
                 case 's': { // String
@@ -27,7 +27,7 @@ void printf(const char* format, ...) {
 
                     if (is_negative) {
                         num = -num;
-                        print_char('-');
+                        putchar('-');
                     }
 
                     size_t pos = 0;
@@ -37,7 +37,7 @@ void printf(const char* format, ...) {
                     } while (num > 0);
 
                     for (size_t j = 0; j < pos; j++) {
-                        print_char(buffer[pos - j - 1]);
+                        putchar(buffer[pos - j - 1]);
                     }
 
                     break;
@@ -54,23 +54,23 @@ void printf(const char* format, ...) {
                     } while (num > 0);
 
                     for (size_t j = 0; j < pos; j++) {
-                        print_char(buffer[pos - j - 1]);
+                        putchar(buffer[pos - j - 1]);
                     }
 
                     break;
                 }
                 case '%': {
-                    print_char('%');
+                    putchar('%');
                     break;
                 }
                 default: {
-                    print_char('%');
-                    print_char(format[i]);
+                    putchar('%');
+                    putchar(format[i]);
                     break;
                 }
             }
         } else {
-            print_char(format[i]);
+            putchar(format[i]);
         }
     }
 
