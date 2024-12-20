@@ -6,6 +6,8 @@ author: ThatOSDeveloper
 
 # {{ page.title }}
 
+Author: {{ page.author }}
+
 Now that the implementation of multitasking is complete, the PaybackOS team would like to share an overview of how a simple multitasking system works and how it can be implemented.
 
 ## Overview of Multitasking Types
