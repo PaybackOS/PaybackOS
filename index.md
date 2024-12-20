@@ -7,3 +7,4 @@ PaybackOS is a minimal OS written for 64 bit x86_64 machines.
 ## Blog
 
 ### [Starting from scratch](blog/startingover.html)
+### [Multitasking](blog/multitasking.html)
