@@ -43,3 +43,5 @@ Multithreading is a subset of multitasking that can be used with either of the a
 #### Key Feature:
 - Each task can run on a separate thread, allowing for parallel execution on multi-core processors.
 - Multithreading is critical for modern systems to fully utilize hardware capabilities and achieve efficient execution.
+
+[back](../)
