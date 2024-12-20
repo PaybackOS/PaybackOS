@@ -1,4 +1,5 @@
-#include "print.h"
+#include "../headers/print.h"
+#include "../headers/io.h"
 
 const static size_t NUM_COLS = 80;
 const static size_t NUM_ROWS = 25;
@@ -12,6 +13,18 @@ struct Char* buffer = (struct Char*) 0xb8000;
 size_t col = 0;
 size_t row = 0;
 uint8_t color = PRINT_COLOR_WHITE | PRINT_COLOR_BLACK << 4;
+
+void update_cursor() {
+    size_t pos = col + NUM_COLS * row;
+
+    // Send the high byte of the cursor position
+    outb(0x3D4, 0x0E);
+    outb(0x3D5, (pos >> 8) & 0xFF);
+
+    // Send the low byte of the cursor position
+    outb(0x3D4, 0x0F);
+    outb(0x3D5, pos & 0xFF);
+}
 
 void clear_row(size_t row) {
     struct Char empty = (struct Char) {
@@ -28,6 +41,9 @@ void print_clear() {
     for (size_t i = 0; i < NUM_ROWS; i++) {
         clear_row(i);
     }
+    col = 0;
+    row = 0;
+    update_cursor();
 }
 
 void print_newline() {
@@ -35,6 +51,7 @@ void print_newline() {
 
     if (row < NUM_ROWS - 1) {
         row++;
+        update_cursor();
         return;
     }
 
@@ -45,7 +62,8 @@ void print_newline() {
         }
     }
 
-    clear_row(NUM_COLS - 1);
+    clear_row(NUM_ROWS - 1);
+    update_cursor();
 }
 
 void print_char(char character) {
@@ -54,7 +72,7 @@ void print_char(char character) {
         return;
     }
 
-    if (col > NUM_COLS) {
+    if (col >= NUM_COLS) {
         print_newline();
     }
 
@@ -64,6 +82,7 @@ void print_char(char character) {
     };
 
     col++;
+    update_cursor();
 }
 
 void print_str(char* str) {
