@@ -1,7 +1,13 @@
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdbool.h>
+
+extern bool debug;
 
 void log(int level, const char* format, ...) {
+    if (level == DEBUG & debug == false) {
+        return;
+    }
     va_list args;
     va_start(args, format);
 

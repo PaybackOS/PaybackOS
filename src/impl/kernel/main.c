@@ -2,6 +2,9 @@
 #include <liballoc.h>
 #include <string.h>
 #include <task.h>
+#include <stdbool.h>
+
+bool debug = true;
 
 void testfunc1() {
     static int itr = 0;  // Retains value across invocations
@@ -39,11 +42,14 @@ void test_liballoc() {
 
 void kernel_main() {
     printf("Thank you for using PaybackOS!\n");
-    test_liballoc();
-    // Test the scheduler
-    add_task(testfunc1);
-    add_task(testfunc2);
-    scheduler();
+    if (debug == true) {
+        // Test our memory allocation
+        test_liballoc();
+        // Test the scheduler
+        add_task(testfunc1);
+        add_task(testfunc2);
+        scheduler();
+    }
     // Test the logging system
     log(DEBUG, "debug test.");
 }
