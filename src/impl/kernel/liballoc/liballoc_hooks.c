@@ -15,6 +15,9 @@ typedef struct AllocBlock {
 
 static AllocBlock* alloc_list = NULL;  // The linked list of all allocated memory blocks
 
+// Declare the symbol 'kernel_end' defined in the linker script
+extern char kernel_end;  // 'kernel_end' is defined in the linker script to mark the end of the kernel's memory
+
 /** 
  * This function locks the memory management structures.
  * It sets the alloc_lock to prevent concurrent access.
@@ -56,12 +59,11 @@ void* liballoc_alloc(int pages) {
         return NULL;  // Invalid allocation request
     }
 
-    // Simulate allocating pages starting at an "arbitrary" base address
-    // This assumes you have a starting point for available memory. We're using a simple formula.
-    void* allocated_memory = (void*)(0x100000 + (pages * PAGE_SIZE));  // Adjusted as per pages requested
+    // Use 'kernel_end' to allocate memory after the kernel's end
+    void* allocated_memory = (void*)(&kernel_end + (pages * PAGE_SIZE));  // Start allocation after kernel_end
 
     // Create an allocation record
-    AllocBlock* new_alloc = (AllocBlock*)0x200000;  // Dummy "memory space" for the allocation tracking (assumed space)
+    AllocBlock* new_alloc = (AllocBlock*)allocated_memory;  // Track the allocation metadata after the allocated memory
     new_alloc->ptr = allocated_memory;
     new_alloc->pages = pages;
     new_alloc->next = alloc_list;  // Link this allocation with the existing list
