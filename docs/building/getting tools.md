@@ -10,12 +10,12 @@ $ = root
 
 ### Debian
 ```bash
-$ apt install qemu-system nasm xorriso grub-pc-bin grub-common dosfstools
+$ apt install qemu-system nasm xorriso grub-pc-bin grub-common mtools
 ```
 
 ### Arch linux
 ```bash
-$ pacman -S qemu nasm grub xorriso dosfstools
+$ pacman -S qemu nasm grub xorriso mtools
 ```
 
 Now one thing we did not install is our cross compiler, this will require either building it from source or using brew.
