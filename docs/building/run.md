@@ -6,5 +6,5 @@ Flash the ISO to the USB and try to boot it.
 ## Option two QEMU
 run this command from your terminal
 ```bash
-make run
+make run-[arch you built for]
 ```
