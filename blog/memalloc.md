@@ -18,6 +18,10 @@ How we went about developing a memory allocation solution was simple, do what ev
 
 First we have the ```liballoc_lock();``` and ```liballoc_unlock();``` functions which allow us to lock liballoc to stop more than once memory allocation from doing anything at a time (useful on a multithreaded system where multiple apps run at once)
 
-Then we have the 2 main ones which are ```liballoc_alloc();``` and ```liballoc_free();``` These handle allocating memory itself which is the heart of liballoc, liballoc_alloc handles the allocation of it while free handles marking it as free to use for future allocations.
+Then we have the 2 main ones which are ```liballoc_alloc(int pages);``` and ```liballoc_free(void* ptr, int pages);``` These handle allocating memory itself which is the heart of liballoc, liballoc_alloc handles the allocation of it while free handles marking it as free to use for future allocations.
+
+## How our memory allocation works
+
+The PaybackOS memory allocation model is very simple, we have a max page size of 4KB (4096 bytes) then we have our list start at the end of our kernel in memory, then it will allocate memory to everything after that.
 
 [back](../)
